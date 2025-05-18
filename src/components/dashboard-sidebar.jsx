@@ -27,7 +27,7 @@ export function DashboardSidebar() {
       icon: "📢",
     },
     {
-      title: "Messages",
+      title: "Messages Queue",
       href: "/dashboard/messages",
       icon: "💬",
     },
