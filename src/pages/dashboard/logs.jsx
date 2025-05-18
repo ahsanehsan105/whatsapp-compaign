@@ -1,118 +1,298 @@
+"use client"
+
+import { useState, useRef, useEffect } from "react"
 import { Card } from "../../components/ui/card"
-import { Table } from "../../components/ui/table"
+import { Button } from "../../components/ui/button"
+import { Input } from "../../components/ui/input"
+import { Eye, Search, Calendar, ChevronDown, MoreVertical, CheckCircle2, AlertCircle } from "lucide-react"
+import DatePicker from "react-datepicker"
+import "react-datepicker/dist/react-datepicker.css"
 
 export default function MessageLogs() {
+  // Date state
+  const [fromDate, setFromDate] = useState(null)
+  const [toDate, setToDate] = useState(null)
+
+  // Format date for display
+  const formatDate = (date) => {
+    if (!date) return ""
+    return date.toLocaleDateString("en-US", {
+      month: "2-digit",
+      day: "2-digit",
+      year: "numeric",
+    })
+  }
+
   // Sample log data
   const logs = [
     {
       id: "1",
-      messageId: "msg_123456",
-      phoneNumber: "+1234567890",
+      campaign: "Summer Promotion",
+      message: "Don't miss our summer sale! 20% off all products until June 30th.",
       status: "Delivered",
-      timestamp: "2023-05-18 14:30:22",
-      campaign: "Welcome Campaign",
+      sentTime: "May 17, 2023 22:47",
+      phoneNumber: "+1 (555) 123-4567",
+      group: "Marketing Group",
+      hasMedia: true,
     },
     {
       id: "2",
-      messageId: "msg_123457",
-      phoneNumber: "+1987654321",
-      status: "Failed",
-      timestamp: "2023-05-18 14:31:05",
-      campaign: "Welcome Campaign",
+      campaign: "Summer Promotion",
+      message: "Use code SUMMER25 for an extra 5% off your purchase!",
+      status: "Read",
+      sentTime: "May 17, 2023 21:47",
+      phoneNumber: "+1 (555) 123-4567",
+      group: "Marketing Group",
+      hasMedia: false,
     },
     {
       id: "3",
-      messageId: "msg_123458",
-      phoneNumber: "+1122334455",
+      campaign: "New Product Launch",
+      message: "Introducing our newest product line! Check it out now.",
       status: "Delivered",
-      timestamp: "2023-05-18 14:32:18",
-      campaign: "Promo Campaign",
+      sentTime: "May 17, 2023 20:47",
+      phoneNumber: "+1 (555) 987-6543",
+      group: "Sales Prospects",
+      hasMedia: true,
     },
     {
       id: "4",
-      messageId: "msg_123459",
-      phoneNumber: "+1555666777",
-      status: "Pending",
-      timestamp: "2023-05-18 14:33:45",
-      campaign: "Promo Campaign",
+      campaign: "New Product Launch",
+      message: "Limited time offer: Get a free sample with your first purchase!",
+      status: "Failed",
+      sentTime: "May 17, 2023 19:47",
+      phoneNumber: "+1 (555) 987-6543",
+      group: "Sales Prospects",
+      hasMedia: false,
     },
     {
       id: "5",
-      messageId: "msg_123460",
-      phoneNumber: "+1999888777",
+      campaign: "Customer Feedback",
+      message: "We value your feedback! Please take our quick survey.",
+      status: "Read",
+      sentTime: "May 17, 2023 00:47",
+      phoneNumber: "+1 (555) 123-4567",
+      group: "Customer Support",
+      hasMedia: false,
+    },
+    {
+      id: "6",
+      campaign: "Customer Feedback",
+      message: "Thank you for being a valued customer!",
       status: "Delivered",
-      timestamp: "2023-05-18 14:35:12",
-      campaign: "Reminder Campaign",
+      sentTime: "May 17, 2023 00:17",
+      phoneNumber: "+1 (555) 123-4567",
+      group: "Customer Support",
+      hasMedia: false,
     },
   ]
 
-  // Status badge color
-  const getStatusColor = (status) => {
+  // Dropdown state
+  const [openDropdownId, setOpenDropdownId] = useState(null)
+  const dropdownRef = useRef(null)
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setOpenDropdownId(null)
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside)
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside)
+    }
+  }, [])
+
+  // Toggle dropdown
+  const toggleDropdown = (id) => {
+    setOpenDropdownId(openDropdownId === id ? null : id)
+  }
+
+  // Get status badge styling
+  const getStatusBadge = (status) => {
     switch (status) {
       case "Delivered":
-        return "bg-green-100 text-green-800"
+        return (
+          <div className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+            <CheckCircle2 className="w-3 h-3 mr-1" />
+            Delivered
+          </div>
+        )
+      case "Read":
+        return (
+          <div className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+            <CheckCircle2 className="w-3 h-3 mr-1" />
+            Read
+          </div>
+        )
       case "Failed":
-        return "bg-red-100 text-red-800"
-      case "Pending":
-        return "bg-yellow-100 text-yellow-800"
+        return (
+          <div className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+            <AlertCircle className="w-3 h-3 mr-1" />
+            Failed
+          </div>
+        )
       default:
-        return "bg-gray-100 text-gray-800"
+        return (
+          <div className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+            {status}
+          </div>
+        )
     }
   }
 
+  // Custom date picker input
+  const CustomDatePickerInput = ({ value, onClick, placeholder }) => (
+    <div className="relative">
+      <Input
+        type="text"
+        value={value}
+        onClick={onClick}
+        placeholder={placeholder}
+        className="pl-3 pr-10 cursor-pointer"
+        readOnly
+      />
+      <Calendar className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none" />
+    </div>
+  )
+
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold">Message Logs</h1>
-        <p className="text-gray-500">View the delivery status of all messages sent through the system</p>
+        <p className="text-gray-500">View detailed logs of all sent WhatsApp messages</p>
       </div>
 
-      <Card>
-        <div className="p-4">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-medium">Recent Message Logs</h2>
-            <div className="flex gap-2">
-              <input type="text" placeholder="Search logs..." className="px-3 py-1 border rounded-md" />
-              <button className="px-3 py-1 bg-gray-100 rounded-md">Filter</button>
+      <Card className="p-6">
+        <div className="space-y-4">
+          <div>
+            <h2 className="text-lg font-medium">Filter Logs</h2>
+            <p className="text-sm text-gray-500">Narrow down logs by date, campaign, or status</p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div>
+              <label className="block text-sm font-medium mb-1">From Date</label>
+              <DatePicker
+                selected={fromDate}
+                onChange={(date) => setFromDate(date)}
+                customInput={<CustomDatePickerInput placeholder="mm/dd/yyyy" />}
+                dateFormat="MM/dd/yyyy"
+                isClearable
+                placeholderText="mm/dd/yyyy"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">To Date</label>
+              <DatePicker
+                selected={toDate}
+                onChange={(date) => setToDate(date)}
+                customInput={<CustomDatePickerInput placeholder="mm/dd/yyyy" />}
+                dateFormat="MM/dd/yyyy"
+                isClearable
+                placeholderText="mm/dd/yyyy"
+                minDate={fromDate}
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">Campaign</label>
+              <div className="relative">
+                <select className="w-full h-10 pl-3 pr-10 border rounded-md appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500">
+                  <option>All Campaigns</option>
+                  <option>Summer Promotion</option>
+                  <option>New Product Launch</option>
+                  <option>Customer Feedback</option>
+                </select>
+                <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none" />
+              </div>
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">Status</label>
+              <div className="relative">
+                <select className="w-full h-10 pl-3 pr-10 border rounded-md appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500">
+                  <option>All Statuses</option>
+                  <option>Delivered</option>
+                  <option>Read</option>
+                  <option>Failed</option>
+                </select>
+                <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none" />
+              </div>
             </div>
           </div>
 
-          <Table>
-            <thead>
-              <tr>
-                <th>Message ID</th>
-                <th>Phone Number</th>
-                <th>Campaign</th>
-                <th>Status</th>
-                <th>Timestamp</th>
-              </tr>
-            </thead>
-            <tbody>
-              {logs.map((log) => (
-                <tr key={log.id}>
-                  <td>{log.messageId}</td>
-                  <td>{log.phoneNumber}</td>
-                  <td>{log.campaign}</td>
-                  <td>
-                    <span className={`inline-block px-2 py-1 rounded-full text-xs ${getStatusColor(log.status)}`}>
-                      {log.status}
-                    </span>
-                  </td>
-                  <td>{log.timestamp}</td>
-                </tr>
-              ))}
-            </tbody>
-          </Table>
+          <div className="flex justify-end">
+            <Button className="bg-blue-600 hover:bg-blue-700 text-white">
+              <Search className="w-4 h-4 mr-2" />
+              Apply Filters
+            </Button>
+          </div>
+        </div>
+      </Card>
 
-          <div className="flex justify-between items-center mt-4">
-            <div className="text-sm text-gray-500">Showing 5 of 125 logs</div>
-            <div className="flex gap-1">
-              <button className="px-3 py-1 border rounded-md">Previous</button>
-              <button className="px-3 py-1 border rounded-md bg-gray-100">1</button>
-              <button className="px-3 py-1 border rounded-md">2</button>
-              <button className="px-3 py-1 border rounded-md">3</button>
-              <button className="px-3 py-1 border rounded-md">Next</button>
-            </div>
+      <Card className="p-6">
+        <div>
+          <h2 className="text-lg font-medium mb-2">Message Logs</h2>
+          <p className="text-sm text-gray-500 mb-4">Detailed logs of all sent messages</p>
+
+          <div className="overflow-x-auto">
+            <table className="w-full border-collapse">
+              <thead>
+                <tr className="border-b">
+                  <th className="text-left py-3 px-4 font-medium">Campaign</th>
+                  <th className="text-left py-3 px-4 font-medium">Message</th>
+                  <th className="text-left py-3 px-4 font-medium">Status</th>
+                  <th className="text-left py-3 px-4 font-medium">Sent Time</th>
+                  <th className="text-left py-3 px-4 font-medium">WhatsApp Number</th>
+                  <th className="text-left py-3 px-4 font-medium">Group</th>
+                  <th className="text-right py-3 px-4 font-medium">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {logs.map((log) => (
+                  <tr key={log.id} className="border-b hover:bg-gray-50">
+                    <td className="py-3 px-4">{log.campaign}</td>
+                    <td className="py-3 px-4 max-w-xs truncate">
+                      {log.message}
+                      {log.hasMedia && (
+                        <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800">
+                          Media
+                        </span>
+                      )}
+                    </td>
+                    <td className="py-3 px-4">{getStatusBadge(log.status)}</td>
+                    <td className="py-3 px-4">{log.sentTime}</td>
+                    <td className="py-3 px-4">{log.phoneNumber}</td>
+                    <td className="py-3 px-4">{log.group}</td>
+                    <td className="py-3 px-4 text-right">
+                      <div className="relative" ref={dropdownRef}>
+                        <button onClick={() => toggleDropdown(log.id)} className="p-1 rounded-full hover:bg-gray-100">
+                          <MoreVertical className="h-5 w-5 text-gray-500" />
+                        </button>
+
+                        {openDropdownId === log.id && (
+                          <div className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                            <div className="py-1">
+                              <button
+                                className="flex w-full items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                onClick={() => {
+                                  console.log("View details for", log.id)
+                                  setOpenDropdownId(null)
+                                }}
+                              >
+                                <Eye className="mr-2 h-4 w-4" />
+                                View Detail
+                              </button>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </div>
       </Card>

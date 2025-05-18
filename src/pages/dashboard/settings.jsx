@@ -1,364 +1,235 @@
 "use client"
 
 import { useState } from "react"
-import { Badge } from "../../components/ui/badge"
 import { Button } from "../../components/ui/button"
 import { Input } from "../../components/ui/input"
-import { Label } from "../../components/ui/label"
-import { Textarea } from "../../components/ui/textarea"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../components/ui/select"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../components/ui/tabs"
-import { Separator } from "../../components/ui/separator"
-import { Switch } from "../../components/ui/switch"
-import { AlertCircle, Save } from "lucide-react"
-import { Alert, AlertDescription } from "../../components/ui/alert"
-import { useToast } from "../../hooks/use-toast"
+import { Card } from "../../components/ui/card"
+import { RefreshCcw, QrCode } from "lucide-react"
 
 export default function SettingsPage() {
-  const { toast } = useToast()
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState("")
-
-  // General settings
-  const [companyName, setCompanyName] = useState("Acme Inc.")
-  const [defaultInterval, setDefaultInterval] = useState("5")
-  const [maxMessagesPerCampaign, setMaxMessagesPerCampaign] = useState("3000")
-
-  // WhatsApp settings
-  const [enableRetries, setEnableRetries] = useState(true)
-  const [maxRetries, setMaxRetries] = useState("3")
-  const [retryInterval, setRetryInterval] = useState("5")
-  const [enableMediaMessages, setEnableMediaMessages] = useState(true)
-  const [maxMediaSize, setMaxMediaSize] = useState("16")
-
-  // Notification settings
-  const [emailNotifications, setEmailNotifications] = useState(true)
-  const [notificationEmail, setNotificationEmail] = useState("admin@example.com")
-  const [notifyCampaignStart, setNotifyCampaignStart] = useState(true)
-  const [notifyCampaignEnd, setNotifyCampaignEnd] = useState(true)
-  const [notifyErrors, setNotifyErrors] = useState(true)
-
-  const handleSaveSettings = async (e) => {
-    e.preventDefault()
-    setIsLoading(true)
-    setError("")
-
-    try {
-      // In a real app, this would be an API call to save settings
-      // For demo purposes, we'll just simulate a successful save
-      await new Promise((resolve) => setTimeout(resolve, 1500))
-
-      toast({
-        title: "Settings saved",
-        description: "Your settings have been saved successfully.",
-      })
-    } catch (err) {
-      setError("An error occurred while saving settings. Please try again.")
-    } finally {
-      setIsLoading(false)
-    }
-  }
+  const [activeTab, setActiveTab] = useState("general")
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">Settings</h1>
-        <p className="text-muted-foreground">Configure your WhatsApp automation system</p>
+        <h1 className="text-3xl font-bold text-gray-800">Settings</h1>
+        <p className="text-gray-600">Configure your WhatsApp campaign automation system</p>
       </div>
 
-      <form onSubmit={handleSaveSettings}>
-        <Tabs defaultValue="general">
-          <TabsList className="mb-4">
-            <TabsTrigger value="general">General</TabsTrigger>
-            <TabsTrigger value="whatsapp">WhatsApp</TabsTrigger>
-            <TabsTrigger value="notifications">Notifications</TabsTrigger>
-            <TabsTrigger value="users">Users</TabsTrigger>
-          </TabsList>
+      <div className="bg-gray-100 rounded-md p-1">
+        <div className="flex">
+          <button
+            className={`flex-1 py-3 px-4 rounded-md text-center ${
+              activeTab === "general" ? "bg-white text-gray-800" : "bg-transparent text-gray-600"
+            }`}
+            onClick={() => setActiveTab("general")}
+          >
+            General
+          </button>
+          <button
+            className={`flex-1 py-3 px-4 rounded-md text-center ${
+              activeTab === "whatsapp" ? "bg-white text-gray-800" : "bg-transparent text-gray-600"
+            }`}
+            onClick={() => setActiveTab("whatsapp")}
+          >
+            WhatsApp
+          </button>
+          <button
+            className={`flex-1 py-3 px-4 rounded-md text-center ${
+              activeTab === "account" ? "bg-white text-gray-800" : "bg-transparent text-gray-600"
+            }`}
+            onClick={() => setActiveTab("account")}
+          >
+            Account
+          </button>
+        </div>
+      </div>
 
-          {error && (
-            <Alert variant="destructive" className="mb-6">
-              <AlertCircle className="h-4 w-4" />
-              <AlertDescription>{error}</AlertDescription>
-            </Alert>
-          )}
+      {activeTab === "general" && (
+        <Card className="p-6">
+          <div className="space-y-6">
+            <div>
+              <h2 className="text-xl font-bold">General Settings</h2>
+              <p className="text-gray-600 text-sm">Configure general system settings</p>
+            </div>
 
-          <TabsContent value="general" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>General Settings</CardTitle>
-                <CardDescription>Configure basic system settings</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="company-name">Company Name</Label>
-                  <Input id="company-name" value={companyName} onChange={(e) => setCompanyName(e.target.value)} />
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium mb-1">Company Name</label>
+                <Input defaultValue="CodeCrafts LLC" className="max-w-md" />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-1">Default Message Interval (minutes)</label>
+                <Input type="number" defaultValue="5" className="max-w-md" />
+              </div>
+
+              <div className="flex items-center justify-between max-w-md">
+                <label className="text-sm font-medium">Auto-retry failed messages</label>
+                <div className="relative inline-flex h-6 w-11 items-center rounded-full bg-blue-600">
+                  <span className="absolute h-4 w-4 rounded-full bg-white translate-x-6"></span>
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="default-interval">Default Message Interval (minutes)</Label>
-                  <Select value={defaultInterval} onValueChange={setDefaultInterval}>
-                    <SelectTrigger id="default-interval">
-                      <SelectValue placeholder="Select interval" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="1">1 minute</SelectItem>
-                      <SelectItem value="5">5 minutes</SelectItem>
-                      <SelectItem value="10">10 minutes</SelectItem>
-                      <SelectItem value="15">15 minutes</SelectItem>
-                      <SelectItem value="30">30 minutes</SelectItem>
-                      <SelectItem value="60">60 minutes</SelectItem>
-                    </SelectContent>
-                  </Select>
+              </div>
+
+              <div className="flex items-center justify-between max-w-md">
+                <label className="text-sm font-medium">Email notifications for campaign completion</label>
+                <div className="relative inline-flex h-6 w-11 items-center rounded-full bg-blue-600">
+                  <span className="absolute h-4 w-4 rounded-full bg-white translate-x-6"></span>
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="max-messages">Maximum Messages Per Campaign</Label>
-                  <Input
-                    id="max-messages"
-                    type="number"
-                    value={maxMessagesPerCampaign}
-                    onChange={(e) => setMaxMessagesPerCampaign(e.target.value)}
-                  />
-                  <p className="text-xs text-muted-foreground">
-                    Limit the number of messages that can be sent in a single campaign
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
+              </div>
 
-            <Card>
-              <CardHeader>
-                <CardTitle>Default Message Templates</CardTitle>
-                <CardDescription>Configure default message templates for campaigns</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="default-template">Default Template</Label>
-                  <Textarea
-                    id="default-template"
-                    placeholder="Enter default message template"
-                    rows={4}
-                    defaultValue="Hi {name}, this is a message from {company}. {message}"
-                  />
-                  <p className="text-xs text-muted-foreground">
-                    You can use {"{name}"}, {"{company}"}, and {"{message}"} as placeholders
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
+              <div>
+                <Button className="bg-blue-600 hover:bg-blue-700">Save Settings</Button>
+              </div>
+            </div>
+          </div>
+        </Card>
+      )}
 
-          <TabsContent value="whatsapp" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>WhatsApp Settings</CardTitle>
-                <CardDescription>Configure WhatsApp messaging settings</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <div className="space-y-0.5">
-                    <Label htmlFor="enable-retries">Enable Message Retries</Label>
-                    <p className="text-sm text-muted-foreground">Automatically retry failed message deliveries</p>
-                  </div>
-                  <Switch id="enable-retries" checked={enableRetries} onCheckedChange={setEnableRetries} />
-                </div>
+      {activeTab === "whatsapp" && (
+        <div className="space-y-6">
+          <Card className="p-6">
+            <div className="space-y-6">
+              <div>
+                <h2 className="text-xl font-bold">WhatsApp Connections</h2>
+                <p className="text-gray-600 text-sm">Manage your WhatsApp number connections</p>
+              </div>
 
-                {enableRetries && (
-                  <>
-                    <div className="space-y-2">
-                      <Label htmlFor="max-retries">Maximum Retry Attempts</Label>
-                      <Input
-                        id="max-retries"
-                        type="number"
-                        value={maxRetries}
-                        onChange={(e) => setMaxRetries(e.target.value)}
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="retry-interval">Retry Interval (minutes)</Label>
-                      <Input
-                        id="retry-interval"
-                        type="number"
-                        value={retryInterval}
-                        onChange={(e) => setRetryInterval(e.target.value)}
-                      />
-                    </div>
-                  </>
-                )}
-
-                <Separator />
-
-                <div className="flex items-center justify-between">
-                  <div className="space-y-0.5">
-                    <Label htmlFor="enable-media">Enable Media Messages</Label>
-                    <p className="text-sm text-muted-foreground">Allow sending images and other media in messages</p>
-                  </div>
-                  <Switch id="enable-media" checked={enableMediaMessages} onCheckedChange={setEnableMediaMessages} />
-                </div>
-
-                {enableMediaMessages && (
-                  <div className="space-y-2">
-                    <Label htmlFor="max-media-size">Maximum Media Size (MB)</Label>
-                    <Input
-                      id="max-media-size"
-                      type="number"
-                      value={maxMediaSize}
-                      onChange={(e) => setMaxMediaSize(e.target.value)}
-                    />
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle>Rate Limiting</CardTitle>
-                <CardDescription>Configure message rate limiting to avoid WhatsApp restrictions</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="rate-limit">Maximum Messages Per Minute</Label>
-                  <Input id="rate-limit" type="number" defaultValue="30" />
-                  <p className="text-xs text-muted-foreground">
-                    Limit the number of messages that can be sent per minute to avoid WhatsApp restrictions
-                  </p>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="cooldown-period">Cooldown Period (minutes)</Label>
-                  <Input id="cooldown-period" type="number" defaultValue="60" />
-                  <p className="text-xs text-muted-foreground">
-                    Period to wait after reaching the rate limit before resuming sending
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="notifications" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Email Notifications</CardTitle>
-                <CardDescription>Configure email notifications for campaign events</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <div className="space-y-0.5">
-                    <Label htmlFor="email-notifications">Enable Email Notifications</Label>
-                    <p className="text-sm text-muted-foreground">Receive email notifications for important events</p>
-                  </div>
-                  <Switch
-                    id="email-notifications"
-                    checked={emailNotifications}
-                    onCheckedChange={setEmailNotifications}
-                  />
-                </div>
-
-                {emailNotifications && (
-                  <>
-                    <div className="space-y-2">
-                      <Label htmlFor="notification-email">Notification Email</Label>
-                      <Input
-                        id="notification-email"
-                        type="email"
-                        value={notificationEmail}
-                        onChange={(e) => setNotificationEmail(e.target.value)}
-                      />
-                    </div>
-
-                    <Separator />
-
-                    <div className="space-y-4">
-                      <h3 className="font-medium">Notification Events</h3>
-                      <div className="flex items-center justify-between">
-                        <Label htmlFor="notify-campaign-start">Campaign Start</Label>
-                        <Switch
-                          id="notify-campaign-start"
-                          checked={notifyCampaignStart}
-                          onCheckedChange={setNotifyCampaignStart}
-                        />
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <Label htmlFor="notify-campaign-end">Campaign Completion</Label>
-                        <Switch
-                          id="notify-campaign-end"
-                          checked={notifyCampaignEnd}
-                          onCheckedChange={setNotifyCampaignEnd}
-                        />
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <Label htmlFor="notify-errors">Delivery Errors</Label>
-                        <Switch id="notify-errors" checked={notifyErrors} onCheckedChange={setNotifyErrors} />
-                      </div>
-                    </div>
-                  </>
-                )}
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="users" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>User Management</CardTitle>
-                <CardDescription>Manage users who have access to the system</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="rounded-md border">
-                  <div className="flex items-center justify-between p-4">
+              <div className="space-y-4">
+                <div className="border rounded-md p-4">
+                  <div className="flex justify-between items-center">
                     <div>
-                      <h3 className="font-medium">Admin User</h3>
-                      <p className="text-sm text-muted-foreground">admin@example.com</p>
+                      <div className="font-medium">+1 (555) 123-4567</div>
+                      <div className="text-sm text-gray-500">Last active: 2 hours ago</div>
                     </div>
-                    <Badge variant="outline" className="bg-emerald-50 text-emerald-700">
-                      Admin
-                    </Badge>
-                  </div>
-                  <Separator />
-                  <div className="flex items-center justify-between p-4">
-                    <div>
-                      <h3 className="font-medium">Marketing User</h3>
-                      <p className="text-sm text-muted-foreground">marketing@example.com</p>
+                    <div className="flex items-center gap-2">
+                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                        Connected
+                      </span>
                     </div>
-                    <Badge variant="outline" className="bg-blue-50 text-blue-700">
-                      Editor
-                    </Badge>
-                  </div>
-                  <Separator />
-                  <div className="flex items-center justify-between p-4">
-                    <div>
-                      <h3 className="font-medium">Support User</h3>
-                      <p className="text-sm text-muted-foreground">support@example.com</p>
-                    </div>
-                    <Badge variant="outline" className="bg-slate-100 text-slate-700">
-                      Viewer
-                    </Badge>
                   </div>
                 </div>
-                <div className="mt-4">
-                  <Button variant="outline" className="w-full">
-                    Add New User
+
+                <div className="border rounded-md p-4">
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <div className="font-medium">+1 (555) 987-6543</div>
+                      <div className="text-sm text-gray-500">Not currently connected</div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                        Disconnected
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex gap-2">
+                  <Button variant="outline" className="flex items-center gap-2">
+                    <RefreshCcw className="h-4 w-4" />
+                    Refresh Connection
+                  </Button>
+                  <Button className="bg-blue-600 hover:bg-blue-700 flex items-center gap-2">
+                    <QrCode className="h-4 w-4" />
+                    Connect via QR Code
                   </Button>
                 </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
+              </div>
+            </div>
+          </Card>
 
-        <div className="mt-6 flex justify-end">
-          <Button type="submit" disabled={isLoading}>
-            {isLoading ? (
-              <>
-                <Save className="mr-2 h-4 w-4 animate-spin" />
-                Saving...
-              </>
-            ) : (
-              <>
-                <Save className="mr-2 h-4 w-4" />
-                Save Settings
-              </>
-            )}
-          </Button>
+          <Card className="p-6">
+            <div className="space-y-6">
+              <div>
+                <h2 className="text-xl font-bold">WhatsApp Settings</h2>
+                <p className="text-gray-600 text-sm">Configure WhatsApp messaging settings</p>
+              </div>
+
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium mb-1">Maximum Messages Per Day</label>
+                  <Input type="number" defaultValue="1000" className="max-w-md" />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-1">Retry Attempts</label>
+                  <Input type="number" defaultValue="3" className="max-w-md" />
+                </div>
+
+                <div className="flex items-center justify-between max-w-md">
+                  <label className="text-sm font-medium">Enable media messages</label>
+                  <div className="relative inline-flex h-6 w-11 items-center rounded-full bg-blue-600">
+                    <span className="absolute h-4 w-4 rounded-full bg-white translate-x-6"></span>
+                  </div>
+                </div>
+
+                <div>
+                  <Button className="bg-blue-600 hover:bg-blue-700">Save Settings</Button>
+                </div>
+              </div>
+            </div>
+          </Card>
         </div>
-      </form>
+      )}
+
+      {activeTab === "account" && (
+        <div className="space-y-6">
+          <Card className="p-6">
+            <div className="space-y-6">
+              <div>
+                <h2 className="text-xl font-bold">Account Settings</h2>
+                <p className="text-gray-600 text-sm">Update your account information</p>
+              </div>
+
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium mb-1">Full Name</label>
+                  <Input defaultValue="Zain Rashid" className="max-w-md" />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-1">Email Address</label>
+                  <Input type="email" defaultValue="zain@codecrafts.com" className="max-w-md" />
+                </div>
+
+                <div>
+                  <Button className="bg-blue-600 hover:bg-blue-700">Update Account</Button>
+                </div>
+              </div>
+            </div>
+          </Card>
+
+          <Card className="p-6">
+            <div className="space-y-6">
+              <div>
+                <h2 className="text-xl font-bold">Change Password</h2>
+                <p className="text-gray-600 text-sm">Update your account password</p>
+              </div>
+
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium mb-1">Current Password</label>
+                  <Input type="password" className="max-w-md" />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-1">New Password</label>
+                  <Input type="password" className="max-w-md" />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-1">Confirm New Password</label>
+                  <Input type="password" className="max-w-md" />
+                </div>
+
+                <div>
+                  <Button className="bg-blue-600 hover:bg-blue-700">Change Password</Button>
+                </div>
+              </div>
+            </div>
+          </Card>
+        </div>
+      )}
     </div>
   )
 }
