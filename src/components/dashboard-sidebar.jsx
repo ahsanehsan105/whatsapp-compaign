@@ -13,13 +13,12 @@ export function DashboardSidebar() {
   // Get current location from React Router
   const location = useLocation()
 
-  // Navigation items
+  // Updated navigation items
   const navItems = [
     {
       title: "Dashboard",
       href: "/dashboard",
       icon: "📊",
-      // Only exact match for dashboard to prevent it from being active for all sub-routes
       exact: true,
     },
     {
@@ -33,14 +32,9 @@ export function DashboardSidebar() {
       icon: "💬",
     },
     {
-      title: "Accounts",
-      href: "/dashboard/accounts",
-      icon: "👥",
-    },
-    {
-      title: "Analytics",
-      href: "/dashboard/analytics",
-      icon: "📈",
+      title: "Message Logs",
+      href: "/dashboard/logs",
+      icon: "📝",
     },
     {
       title: "Settings",

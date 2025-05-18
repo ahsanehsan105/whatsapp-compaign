@@ -1,6 +1,5 @@
 import { Outlet } from "react-router-dom"
 import { DashboardSidebar } from "../components/dashboard-sidebar"
-import { DashboardHeader } from "../components/dashboard-header"
 import { SidebarProvider } from "../components/ui/sidebar"
 
 export default function DashboardLayout() {
@@ -15,7 +14,6 @@ export default function DashboardLayout() {
 
         {/* Content area - takes remaining width */}
         <div className="flex flex-1 flex-col">
-          <DashboardHeader />
           <main className="flex-1 overflow-auto p-4 md:p-6">
             <Outlet />
           </main>

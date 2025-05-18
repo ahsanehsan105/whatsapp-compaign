@@ -10,6 +10,7 @@ import AccountsPage from "./pages/dashboard/accounts"
 import AnalyticsPage from "./pages/dashboard/analytics"
 import SettingsPage from "./pages/dashboard/settings"
 import UsersPage from "./pages/dashboard/users"
+import MessageLogs from "./pages/dashboard/logs"
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
         <Route path="campaigns" element={<CampaignsPage />} />
         <Route path="campaigns/new" element={<NewCampaignPage />} />
         <Route path="messages" element={<MessagesPage />} />
+        <Route path="logs" element={<MessageLogs />} />
         <Route path="accounts" element={<AccountsPage />} />
         <Route path="analytics" element={<AnalyticsPage />} />
         <Route path="settings" element={<SettingsPage />} />
