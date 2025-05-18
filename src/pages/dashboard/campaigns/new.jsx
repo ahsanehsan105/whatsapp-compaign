@@ -67,21 +67,27 @@ export default function NewCampaignPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      {/* Header */}
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-800">Create New Campaign</h1>
-          <p className="text-gray-600">Set up a new WhatsApp message campaign</p>
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-800">Create New Campaign</h1>
+          <p className="text-gray-600 text-sm sm:text-base">Set up a new WhatsApp message campaign</p>
         </div>
-        <Button variant="outline" className="flex items-center gap-2" onClick={() => window.history.back()}>
+        <Button
+          variant="outline"
+          className="flex items-center gap-2 w-full sm:w-auto"
+          onClick={() => window.history.back()}
+        >
           <ArrowLeft className="h-4 w-4" />
           Back to Campaigns
         </Button>
       </div>
 
+      {/* Tabs */}
       <div className="bg-gray-100 rounded-md p-1">
-        <div className="flex">
+        <div className="flex flex-col xs:flex-row">
           <button
-            className={`flex-1 py-3 px-4 rounded-md text-center ${
+            className={`w-full xs:w-auto flex-1 py-3 px-4 rounded-md text-center transition-all ${
               activeTab === "manual" ? "bg-white text-gray-800" : "bg-transparent text-gray-600"
             }`}
             onClick={() => setActiveTab("manual")}
@@ -89,7 +95,7 @@ export default function NewCampaignPage() {
             Manual Entry
           </button>
           <button
-            className={`flex-1 py-3 px-4 rounded-md text-center ${
+            className={`w-full xs:w-auto flex-1 py-3 px-4 rounded-md text-center transition-all ${
               activeTab === "csv" ? "bg-white text-gray-800" : "bg-transparent text-gray-600"
             }`}
             onClick={() => setActiveTab("csv")}
@@ -99,9 +105,11 @@ export default function NewCampaignPage() {
         </div>
       </div>
 
-      <div className="bg-white rounded-lg border p-6">
+      {/* Form */}
+      <div className="bg-white rounded-lg border p-3 sm:p-6">
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-4">
+            {/* Campaign Name */}
             <div>
               <label className="block text-sm font-medium mb-1">Campaign Name</label>
               <Input
@@ -111,6 +119,7 @@ export default function NewCampaignPage() {
               />
             </div>
 
+            {/* Message Content or File Upload */}
             {activeTab === "manual" ? (
               <div>
                 <label className="block text-sm font-medium mb-1">Message Content</label>
@@ -142,7 +151,8 @@ export default function NewCampaignPage() {
               </div>
             )}
 
-            <div className="grid grid-cols-2 gap-4">
+            {/* WhatsApp Number & Target Group */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium mb-1">WhatsApp Number</label>
                 <div className="relative">
@@ -184,7 +194,8 @@ export default function NewCampaignPage() {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            {/* Start Time & Message Interval */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium mb-1">Start Time</label>
                 <DatePicker
@@ -209,6 +220,7 @@ export default function NewCampaignPage() {
               </div>
             </div>
 
+            {/* Media Attachment */}
             {activeTab === "manual" && (
               <div>
                 <label className="block text-sm font-medium mb-1">Media Attachment (Optional)</label>
@@ -220,24 +232,26 @@ export default function NewCampaignPage() {
                     onChange={handleMediaUpload}
                     className="hidden"
                   />
-                  <div className="flex items-center">
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-2">
                     <Button
                       type="button"
                       variant="outline"
-                      className="mr-2"
+                      className="w-full sm:w-auto"
                       onClick={() => document.getElementById("media-upload").click()}
                     >
                       Choose file
                     </Button>
-                    <span className="text-sm text-gray-500">{mediaFile ? mediaFile.name : "No file chosen"}</span>
+                    <span className="text-sm text-gray-500">
+                      {mediaFile ? mediaFile.name : "No file chosen"}
+                    </span>
                   </div>
                 </div>
               </div>
             )}
           </div>
 
-          <div className="flex justify-end">
-            <Button type="submit" className="bg-blue-600 hover:bg-blue-700">
+          <div className="flex flex-col sm:flex-row justify-end gap-2">
+            <Button type="submit" className="bg-blue-600 hover:bg-blue-700 w-full sm:w-auto">
               Create Campaign
             </Button>
           </div>

@@ -98,7 +98,6 @@ export default function MessageLogs() {
         setOpenDropdownId(null)
       }
     }
-
     document.addEventListener("mousedown", handleClickOutside)
     return () => {
       document.removeEventListener("mousedown", handleClickOutside)
@@ -161,18 +160,18 @@ export default function MessageLogs() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold">Message Logs</h1>
-        <p className="text-gray-500">View detailed logs of all sent WhatsApp messages</p>
+        <h1 className="text-xl sm:text-2xl font-bold">Message Logs</h1>
+        <p className="text-gray-500 text-sm sm:text-base">View detailed logs of all sent WhatsApp messages</p>
       </div>
 
-      <Card className="p-6">
+      {/* Filter Card */}
+      <Card className="p-3 sm:p-6">
         <div className="space-y-4">
           <div>
             <h2 className="text-lg font-medium">Filter Logs</h2>
             <p className="text-sm text-gray-500">Narrow down logs by date, campaign, or status</p>
           </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <div>
               <label className="block text-sm font-medium mb-1">From Date</label>
               <DatePicker
@@ -221,9 +220,8 @@ export default function MessageLogs() {
               </div>
             </div>
           </div>
-
-          <div className="flex justify-end">
-            <Button className="bg-blue-600 hover:bg-blue-700 text-white">
+          <div className="flex flex-col sm:flex-row justify-end gap-2">
+            <Button className="bg-blue-600 hover:bg-blue-700 text-white w-full sm:w-auto">
               <Search className="w-4 h-4 mr-2" />
               Apply Filters
             </Button>
@@ -231,12 +229,14 @@ export default function MessageLogs() {
         </div>
       </Card>
 
-      <Card className="p-6">
+      {/* Logs Card */}
+      <Card className="p-3 sm:p-6">
         <div>
           <h2 className="text-lg font-medium mb-2">Message Logs</h2>
           <p className="text-sm text-gray-500 mb-4">Detailed logs of all sent messages</p>
 
-          <div className="overflow-x-auto">
+          {/* Table for md+ screens */}
+          <div className="overflow-x-auto hidden md:block">
             <table className="w-full border-collapse">
               <thead>
                 <tr className="border-b">
@@ -270,7 +270,6 @@ export default function MessageLogs() {
                         <button onClick={() => toggleDropdown(log.id)} className="p-1 rounded-full hover:bg-gray-100">
                           <MoreVertical className="h-5 w-5 text-gray-500" />
                         </button>
-
                         {openDropdownId === log.id && (
                           <div className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                             <div className="py-1">
@@ -293,6 +292,62 @@ export default function MessageLogs() {
                 ))}
               </tbody>
             </table>
+          </div>
+
+          {/* Cards for mobile (below md) */}
+          <div className="md:hidden flex flex-col gap-4">
+            {logs.map((log) => (
+              <div key={log.id} className="rounded-lg border bg-white p-4 flex flex-col gap-2 shadow-sm">
+                <div className="flex justify-between items-center">
+                  <span className="font-semibold text-base">{log.campaign}</span>
+                  <div className="relative" ref={dropdownRef}>
+                    <button onClick={() => toggleDropdown(log.id)} className="p-1 rounded-full hover:bg-gray-100">
+                      <MoreVertical className="h-5 w-5 text-gray-500" />
+                    </button>
+                    {openDropdownId === log.id && (
+                      <div className="absolute right-0 z-10 mt-2 w-40 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                        <div className="py-1">
+                          <button
+                            className="flex w-full items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                            onClick={() => {
+                              console.log("View details for", log.id)
+                              setOpenDropdownId(null)
+                            }}
+                          >
+                            <Eye className="mr-2 h-4 w-4" />
+                            View Detail
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+                <div className="text-sm text-gray-800">
+                  {log.message}
+                  {log.hasMedia && (
+                    <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800">
+                      Media
+                    </span>
+                  )}
+                </div>
+                <div className="flex flex-wrap gap-x-3 gap-y-1 text-xs text-gray-600 mt-1">
+                  <div>
+                    <span className="font-semibold">Status:</span> {getStatusBadge(log.status)}
+                  </div>
+                  <div>
+                    <span className="font-semibold">Sent:</span> {log.sentTime}
+                  </div>
+                </div>
+                <div className="flex flex-wrap gap-x-3 gap-y-1 text-xs text-gray-600">
+                  <div>
+                    <span className="font-semibold">Number:</span> {log.phoneNumber}
+                  </div>
+                  <div>
+                    <span className="font-semibold">Group:</span> {log.group}
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </Card>

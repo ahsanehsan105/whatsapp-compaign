@@ -9,7 +9,6 @@ import {
   SidebarMenuButton,
   useSidebar,
 } from "./ui/sidebar"
-import { useCallback } from "react"
 
 export function DashboardSidebar() {
   const location = useLocation()
@@ -54,20 +53,16 @@ export function DashboardSidebar() {
   return (
     <Sidebar open={open}>
       <SidebarHeader>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center w-full">
+          <span className="text-2xl">{open && "📱"}</span>
+          {open && <span className="text-xl font-bold ml-2">WhatsApp</span>}
           <button
             onClick={toggleSidebar}
-            className="mr-2 rounded p-1 text-2xl hover:bg-slate-100 focus:outline-none"
+            className={`ml-auto rounded p-1 text-2xl hover:bg-slate-100 focus:outline-none`}
             aria-label={open ? "Close sidebar" : "Open sidebar"}
           >
             {open ? <span>←</span> : <span>☰</span>}
           </button>
-          {open && (
-            <>
-              <span className="text-2xl">📱</span>
-              <span className="text-xl font-bold">WhatsApp</span>
-            </>
-          )}
         </div>
       </SidebarHeader>
       <SidebarContent>

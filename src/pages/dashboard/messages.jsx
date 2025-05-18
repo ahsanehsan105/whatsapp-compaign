@@ -9,32 +9,27 @@ import { CheckCircle2, AlertCircle, Search, MoreVertical, Clock, Eye, Edit, XCir
 import { Input } from "../../components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../components/ui/select"
 
-// Custom dropdown component using React state
+// Custom Dropdown
 function Dropdown({ items }) {
   const [isOpen, setIsOpen] = useState(false)
   const dropdownRef = useRef(null)
-
-  // Close dropdown when clicking outside
   useEffect(() => {
     function handleClickOutside(event) {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setIsOpen(false)
       }
     }
-
     document.addEventListener("mousedown", handleClickOutside)
     return () => {
       document.removeEventListener("mousedown", handleClickOutside)
     }
   }, [])
-
   return (
     <div className="relative" ref={dropdownRef}>
       <Button variant="ghost" size="icon" onClick={() => setIsOpen(!isOpen)}>
         <MoreVertical className="h-4 w-4" />
         <span className="sr-only">More Options</span>
       </Button>
-
       {isOpen && (
         <div className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
           <div className="py-1">
@@ -58,7 +53,7 @@ function Dropdown({ items }) {
   )
 }
 
-// Sample upcoming messages data
+// Sample Data (unchanged)
 const upcomingMessages = [
   {
     id: 1,
@@ -97,8 +92,6 @@ const upcomingMessages = [
     hasMedia: false,
   },
 ]
-
-// Sample sent messages data
 const sentMessages = [
   {
     id: 1,
@@ -146,7 +139,7 @@ export default function MessagesPage() {
   const [campaignFilter, setCampaignFilter] = useState("all")
   const [statusFilter, setStatusFilter] = useState("all")
 
-  // Define dropdown items for upcoming messages
+  // Dropdown items
   const upcomingDropdownItems = [
     {
       icon: <Eye className="mr-2 h-4 w-4" />,
@@ -165,8 +158,6 @@ export default function MessagesPage() {
       onClick: () => console.log("Cancel Message clicked"),
     },
   ]
-
-  // Define dropdown items for sent messages
   const sentDropdownItems = [
     {
       icon: <Eye className="mr-2 h-4 w-4" />,
@@ -184,15 +175,12 @@ export default function MessagesPage() {
         message.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
         message.recipient.toLowerCase().includes(searchQuery.toLowerCase()) ||
         message.group.toLowerCase().includes(searchQuery.toLowerCase())
-
       const matchesCampaign =
         campaignFilter === "all" ||
         (campaignFilter === "summer" && message.campaign.includes("Summer")) ||
         (campaignFilter === "product" && message.campaign.includes("Product"))
-
       return matchesSearch && matchesCampaign
     })
-
     // Filter sent messages
     const sentResults = sentMessages.filter((message) => {
       const matchesSearch =
@@ -201,17 +189,13 @@ export default function MessagesPage() {
         message.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
         message.recipient.toLowerCase().includes(searchQuery.toLowerCase()) ||
         message.group.toLowerCase().includes(searchQuery.toLowerCase())
-
       const matchesCampaign =
         campaignFilter === "all" ||
         (campaignFilter === "summer" && message.campaign.includes("Summer")) ||
         (campaignFilter === "product" && message.campaign.includes("Product"))
-
       const matchesStatus = statusFilter === "all" || message.status === statusFilter
-
       return matchesSearch && matchesCampaign && matchesStatus
     })
-
     setFilteredUpcoming(upcomingResults)
     setFilteredSent(sentResults)
   }, [searchQuery, campaignFilter, statusFilter])
@@ -219,21 +203,26 @@ export default function MessagesPage() {
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">Message Queue</h1>
-        <p className="text-muted-foreground">Monitor and manage your scheduled WhatsApp messages</p>
+        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Message Queue</h1>
+        <p className="text-muted-foreground text-sm sm:text-base">
+          Monitor and manage your scheduled WhatsApp messages
+        </p>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>Message Queue Status</CardTitle>
-          <CardDescription>View and manage upcoming and sent messages</CardDescription>
+          <CardTitle className="text-lg sm:text-xl">Message Queue Status</CardTitle>
+          <CardDescription className="text-sm sm:text-base">
+            View and manage upcoming and sent messages
+          </CardDescription>
         </CardHeader>
         <CardContent>
+          {/* Responsive tab layout: always row, scrollable on xs */}
           <div className="mb-6">
-            <div className="bg-gray-100 rounded-md p-1">
-              <div className="flex">
+            <div className="bg-gray-100 rounded-md p-1 overflow-x-auto">
+              <div className="flex flex-row min-w-[280px] sm:min-w-0">
                 <button
-                  className={`flex-1 py-3 px-4 rounded-md text-center ${
+                  className={`flex-1 py-3 px-4 rounded-md text-center min-w-[140px] ${
                     activeTab === "upcoming" ? "bg-white text-gray-800" : "bg-transparent text-gray-600"
                   }`}
                   onClick={() => setActiveTab("upcoming")}
@@ -241,7 +230,7 @@ export default function MessagesPage() {
                   Upcoming
                 </button>
                 <button
-                  className={`flex-1 py-3 px-4 rounded-md text-center ${
+                  className={`flex-1 py-3 px-4 rounded-md text-center min-w-[140px] ${
                     activeTab === "sent" ? "bg-white text-gray-800" : "bg-transparent text-gray-600"
                   }`}
                   onClick={() => setActiveTab("sent")}
@@ -252,6 +241,7 @@ export default function MessagesPage() {
             </div>
           </div>
 
+          {/* FILTERS */}
           <div className="mb-4 flex flex-col gap-4 md:flex-row">
             <div className="relative flex-1">
               <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
@@ -263,10 +253,10 @@ export default function MessagesPage() {
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
             </div>
-            <div className="flex gap-2">
+            <div className="flex flex-col gap-2 sm:flex-row sm:gap-2">
               {activeTab === "sent" ? (
                 <Select value={statusFilter} onValueChange={setStatusFilter}>
-                  <SelectTrigger className="w-[180px]">
+                  <SelectTrigger className="w-full sm:w-[180px]">
                     <SelectValue placeholder="Filter by status" />
                   </SelectTrigger>
                   <SelectContent>
@@ -278,7 +268,7 @@ export default function MessagesPage() {
                 </Select>
               ) : null}
               <Select value={campaignFilter} onValueChange={setCampaignFilter}>
-                <SelectTrigger className="w-[180px]">
+                <SelectTrigger className="w-full sm:w-[180px]">
                   <SelectValue placeholder="Filter by campaign" />
                 </SelectTrigger>
                 <SelectContent>
@@ -290,7 +280,8 @@ export default function MessagesPage() {
             </div>
           </div>
 
-          <div className="rounded-md border">
+          {/* Table for md+ screens */}
+          <div className="rounded-md border hidden md:block">
             <Table>
               <TableHeader>
                 <TableRow>
@@ -370,8 +361,91 @@ export default function MessagesPage() {
             </Table>
           </div>
 
-          <div className="mt-4 flex items-center justify-between">
-            <div className="text-sm text-muted-foreground">
+          {/* Cards for mobile screens */}
+          <div className="md:hidden flex flex-col gap-4">
+            {activeTab === "upcoming"
+              ? filteredUpcoming.map((message) => (
+                  <div
+                    key={message.id}
+                    className="rounded-lg border bg-white p-4 flex flex-col gap-3 shadow-sm"
+                  >
+                    <div className="flex justify-between items-center">
+                      <div className="font-medium text-base">{message.campaign}</div>
+                      <Dropdown items={upcomingDropdownItems} />
+                    </div>
+                    <div className="text-sm text-slate-700">
+                      {message.content}
+                      {message.hasMedia && (
+                        <Badge variant="outline" className="ml-2 bg-slate-100 text-slate-700">
+                          Media
+                        </Badge>
+                      )}
+                    </div>
+                    <div className="flex items-center gap-2 text-xs">
+                      <Clock className="h-4 w-4 text-amber-500" />
+                      <span className="text-amber-500 font-medium">{message.scheduledTime}</span>
+                    </div>
+                    <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-slate-600">
+                      <div>
+                        <span className="font-semibold">Number:</span> {message.recipient}
+                      </div>
+                      <div>
+                        <span className="font-semibold">Group:</span> {message.group}
+                      </div>
+                    </div>
+                  </div>
+                ))
+              : filteredSent.map((message) => (
+                  <div
+                    key={message.id}
+                    className="rounded-lg border bg-white p-4 flex flex-col gap-3 shadow-sm"
+                  >
+                    <div className="flex justify-between items-center">
+                      <div className="font-medium text-base">{message.campaign}</div>
+                      <Dropdown items={sentDropdownItems} />
+                    </div>
+                    <div className="text-sm text-slate-700">
+                      {message.content}
+                      {message.hasMedia && (
+                        <Badge variant="outline" className="ml-2 bg-slate-100 text-slate-700">
+                          Media
+                        </Badge>
+                      )}
+                    </div>
+                    <div className="flex items-center gap-2 text-xs">
+                      {message.status === "delivered" && (
+                        <Badge className="bg-blue-100 text-blue-700 hover:bg-blue-100 hover:text-blue-700">
+                          <CheckCircle2 className="mr-1 h-3 w-3" />
+                          Delivered
+                        </Badge>
+                      )}
+                      {message.status === "read" && (
+                        <Badge className="bg-green-100 text-green-700 hover:bg-green-100 hover:text-green-700">
+                          <CheckCircle2 className="mr-1 h-3 w-3" />
+                          Read
+                        </Badge>
+                      )}
+                      {message.status === "failed" && (
+                        <Badge className="bg-red-100 text-red-700 hover:bg-red-100 hover:text-red-700">
+                          <AlertCircle className="mr-1 h-3 w-3" />
+                          Failed
+                        </Badge>
+                      )}
+                    </div>
+                    <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-slate-600">
+                      <div>
+                        <span className="font-semibold">Number:</span> {message.recipient}
+                      </div>
+                      <div>
+                        <span className="font-semibold">Group:</span> {message.group}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+          </div>
+          {/* Pagination */}
+          <div className="mt-4 flex flex-col sm:flex-row items-center justify-between gap-2">
+            <div className="text-sm text-muted-foreground text-center sm:text-left">
               Showing <strong>{activeTab === "upcoming" ? filteredUpcoming.length : filteredSent.length}</strong> of{" "}
               <strong>{activeTab === "upcoming" ? upcomingMessages.length : sentMessages.length}</strong> messages
             </div>

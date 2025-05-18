@@ -1,12 +1,27 @@
-import { createContext, useContext, useState, useCallback } from "react"
+import { createContext, useContext, useState, useCallback, useEffect } from "react"
 
 const SidebarContext = createContext(null)
 
 export function SidebarProvider({ children }) {
-  const [open, setOpen] = useState(true)
+  const [open, setOpen] = useState(() => {
+    // Try to get previous state from localStorage
+    if (typeof window !== "undefined") {
+      const stored = localStorage.getItem("sidebar-open")
+      if (stored !== null) return stored === "true"
+    }
+    return true
+  })
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      localStorage.setItem("sidebar-open", open ? "true" : "false")
+    }
+  }, [open])
+
   const toggleSidebar = useCallback(() => {
     setOpen(prev => !prev)
   }, [])
+
   const value = { open, toggleSidebar }
   return <SidebarContext.Provider value={value}>{children}</SidebarContext.Provider>
 }
