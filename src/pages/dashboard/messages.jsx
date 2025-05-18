@@ -140,6 +140,11 @@ const sentMessages = [
 
 export default function MessagesPage() {
   const [activeTab, setActiveTab] = useState("upcoming")
+  const [searchQuery, setSearchQuery] = useState("")
+  const [filteredUpcoming, setFilteredUpcoming] = useState(upcomingMessages)
+  const [filteredSent, setFilteredSent] = useState(sentMessages)
+  const [campaignFilter, setCampaignFilter] = useState("all")
+  const [statusFilter, setStatusFilter] = useState("all")
 
   // Define dropdown items for upcoming messages
   const upcomingDropdownItems = [
@@ -169,6 +174,47 @@ export default function MessagesPage() {
       onClick: () => console.log("View Detail clicked"),
     },
   ]
+
+  useEffect(() => {
+    // Filter upcoming messages
+    const upcomingResults = upcomingMessages.filter((message) => {
+      const matchesSearch =
+        searchQuery === "" ||
+        message.campaign.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        message.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        message.recipient.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        message.group.toLowerCase().includes(searchQuery.toLowerCase())
+
+      const matchesCampaign =
+        campaignFilter === "all" ||
+        (campaignFilter === "summer" && message.campaign.includes("Summer")) ||
+        (campaignFilter === "product" && message.campaign.includes("Product"))
+
+      return matchesSearch && matchesCampaign
+    })
+
+    // Filter sent messages
+    const sentResults = sentMessages.filter((message) => {
+      const matchesSearch =
+        searchQuery === "" ||
+        message.campaign.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        message.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        message.recipient.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        message.group.toLowerCase().includes(searchQuery.toLowerCase())
+
+      const matchesCampaign =
+        campaignFilter === "all" ||
+        (campaignFilter === "summer" && message.campaign.includes("Summer")) ||
+        (campaignFilter === "product" && message.campaign.includes("Product"))
+
+      const matchesStatus = statusFilter === "all" || message.status === statusFilter
+
+      return matchesSearch && matchesCampaign && matchesStatus
+    })
+
+    setFilteredUpcoming(upcomingResults)
+    setFilteredSent(sentResults)
+  }, [searchQuery, campaignFilter, statusFilter])
 
   return (
     <div className="flex flex-col gap-6">
@@ -209,11 +255,17 @@ export default function MessagesPage() {
           <div className="mb-4 flex flex-col gap-4 md:flex-row">
             <div className="relative flex-1">
               <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-              <Input type="search" placeholder="Search messages..." className="pl-8" />
+              <Input
+                type="search"
+                placeholder="Search messages..."
+                className="pl-8"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
             </div>
             <div className="flex gap-2">
               {activeTab === "sent" ? (
-                <Select defaultValue="all">
+                <Select value={statusFilter} onValueChange={setStatusFilter}>
                   <SelectTrigger className="w-[180px]">
                     <SelectValue placeholder="Filter by status" />
                   </SelectTrigger>
@@ -225,7 +277,7 @@ export default function MessagesPage() {
                   </SelectContent>
                 </Select>
               ) : null}
-              <Select defaultValue="all">
+              <Select value={campaignFilter} onValueChange={setCampaignFilter}>
                 <SelectTrigger className="w-[180px]">
                   <SelectValue placeholder="Filter by campaign" />
                 </SelectTrigger>
@@ -252,7 +304,7 @@ export default function MessagesPage() {
               </TableHeader>
               <TableBody>
                 {activeTab === "upcoming"
-                  ? upcomingMessages.map((message) => (
+                  ? filteredUpcoming.map((message) => (
                       <TableRow key={message.id}>
                         <TableCell className="font-medium">{message.campaign}</TableCell>
                         <TableCell className="max-w-[300px] truncate">
@@ -276,7 +328,7 @@ export default function MessagesPage() {
                         </TableCell>
                       </TableRow>
                     ))
-                  : sentMessages.map((message) => (
+                  : filteredSent.map((message) => (
                       <TableRow key={message.id}>
                         <TableCell className="font-medium">{message.campaign}</TableCell>
                         <TableCell className="max-w-[300px] truncate">
@@ -320,7 +372,8 @@ export default function MessagesPage() {
 
           <div className="mt-4 flex items-center justify-between">
             <div className="text-sm text-muted-foreground">
-              Showing <strong>4</strong> of <strong>24</strong> messages
+              Showing <strong>{activeTab === "upcoming" ? filteredUpcoming.length : filteredSent.length}</strong> of{" "}
+              <strong>{activeTab === "upcoming" ? upcomingMessages.length : sentMessages.length}</strong> messages
             </div>
             <div className="flex items-center gap-2">
               <Button variant="outline" size="sm" disabled>
