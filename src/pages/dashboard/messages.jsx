@@ -217,21 +217,21 @@ export default function MessagesPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          {/* Responsive tab layout: always row, scrollable on xs */}
+          {/* Responsive tab layout: column on xs, row on sm+ */}
           <div className="mb-6">
-            <div className="bg-gray-100 rounded-md p-1 overflow-x-auto">
-              <div className="flex flex-row min-w-[280px] sm:min-w-0">
+            <div className="bg-gray-100 rounded-md p-1">
+              <div className="flex flex-col xs:flex-row sm:flex-row gap-2 sm:gap-0 sm:min-w-0">
                 <button
-                  className={`flex-1 py-3 px-4 rounded-md text-center min-w-[140px] ${
-                    activeTab === "upcoming" ? "bg-white text-gray-800" : "bg-transparent text-gray-600"
+                  className={`flex-1 py-3 px-4 rounded-md text-center min-w-[120px] transition-all ${
+                    activeTab === "upcoming" ? "bg-white text-gray-800 shadow" : "bg-transparent text-gray-600"
                   }`}
                   onClick={() => setActiveTab("upcoming")}
                 >
                   Upcoming
                 </button>
                 <button
-                  className={`flex-1 py-3 px-4 rounded-md text-center min-w-[140px] ${
-                    activeTab === "sent" ? "bg-white text-gray-800" : "bg-transparent text-gray-600"
+                  className={`flex-1 py-3 px-4 rounded-md text-center min-w-[120px] transition-all ${
+                    activeTab === "sent" ? "bg-white text-gray-800 shadow" : "bg-transparent text-gray-600"
                   }`}
                   onClick={() => setActiveTab("sent")}
                 >
@@ -242,7 +242,7 @@ export default function MessagesPage() {
           </div>
 
           {/* FILTERS */}
-          <div className="mb-4 flex flex-col gap-4 md:flex-row">
+          <div className="mb-4 flex flex-col gap-3 sm:gap-4 md:flex-row md:items-center">
             <div className="relative flex-1">
               <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input
@@ -253,7 +253,7 @@ export default function MessagesPage() {
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
             </div>
-            <div className="flex flex-col gap-2 sm:flex-row sm:gap-2">
+            <div className="flex flex-col gap-2 sm:flex-row sm:gap-2 w-full md:w-auto">
               {activeTab === "sent" ? (
                 <Select value={statusFilter} onValueChange={setStatusFilter}>
                   <SelectTrigger className="w-full sm:w-[180px]">
@@ -281,7 +281,7 @@ export default function MessagesPage() {
           </div>
 
           {/* Table for md+ screens */}
-          <div className="rounded-md border hidden md:block">
+          <div className="rounded-md border hidden md:block overflow-x-auto">
             <Table>
               <TableHeader>
                 <TableRow>
@@ -369,11 +369,11 @@ export default function MessagesPage() {
                     key={message.id}
                     className="rounded-lg border bg-white p-4 flex flex-col gap-3 shadow-sm"
                   >
-                    <div className="flex justify-between items-center">
+                    <div className="flex flex-col xs:flex-row justify-between items-start xs:items-center gap-2">
                       <div className="font-medium text-base">{message.campaign}</div>
                       <Dropdown items={upcomingDropdownItems} />
                     </div>
-                    <div className="text-sm text-slate-700">
+                    <div className="text-sm text-slate-700 break-words">
                       {message.content}
                       {message.hasMedia && (
                         <Badge variant="outline" className="ml-2 bg-slate-100 text-slate-700">
@@ -400,11 +400,11 @@ export default function MessagesPage() {
                     key={message.id}
                     className="rounded-lg border bg-white p-4 flex flex-col gap-3 shadow-sm"
                   >
-                    <div className="flex justify-between items-center">
+                    <div className="flex flex-col xs:flex-row justify-between items-start xs:items-center gap-2">
                       <div className="font-medium text-base">{message.campaign}</div>
                       <Dropdown items={sentDropdownItems} />
                     </div>
-                    <div className="text-sm text-slate-700">
+                    <div className="text-sm text-slate-700 break-words">
                       {message.content}
                       {message.hasMedia && (
                         <Badge variant="outline" className="ml-2 bg-slate-100 text-slate-700">
