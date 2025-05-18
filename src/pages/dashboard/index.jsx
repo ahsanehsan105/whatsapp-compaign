@@ -9,7 +9,7 @@ export default function DashboardPage() {
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card>
+        <Card className="bg-white">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium">Total Campaigns</CardTitle>
             <span className="text-xl">📊</span>
@@ -19,7 +19,7 @@ export default function DashboardPage() {
             <p className="text-xs text-slate-500">+2 from last month</p>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="bg-white">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium">Messages Sent</CardTitle>
             <span className="text-xl">💬</span>
@@ -29,7 +29,7 @@ export default function DashboardPage() {
             <p className="text-xs text-slate-500">+12% from last month</p>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="bg-white">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium">Delivery Rate</CardTitle>
             <span className="text-xl">✅</span>
@@ -39,7 +39,7 @@ export default function DashboardPage() {
             <p className="text-xs text-slate-500">+0.5% from last month</p>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="bg-white">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium">Active Accounts</CardTitle>
             <span className="text-xl">⏱️</span>
@@ -53,7 +53,7 @@ export default function DashboardPage() {
 
       <div className="grid gap-6 md:grid-cols-2">
         {/* Recent Campaigns */}
-        <div className="rounded-lg border border-slate-200 p-6">
+        <div className="rounded-lg border border-slate-200 p-6 bg-white">
           <h2 className="text-2xl font-bold">Recent Campaigns</h2>
           <p className="text-slate-500 mb-6">Your most recent WhatsApp campaigns</p>
 
@@ -121,7 +121,7 @@ export default function DashboardPage() {
         </div>
 
         {/* Upcoming Messages */}
-        <div className="rounded-lg border border-slate-200 p-6">
+        <div className="rounded-lg border border-slate-200 p-6 bg-white">
           <h2 className="text-2xl font-bold">Upcoming Messages</h2>
           <p className="text-slate-500 mb-6">Messages scheduled to be sent soon</p>
 
