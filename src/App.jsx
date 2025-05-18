@@ -1,5 +1,4 @@
 import { Routes, Route, Navigate } from "react-router-dom"
-import HomePage from "./pages/home"
 import LoginPage from "./pages/auth/login"
 import DashboardLayout from "./layouts/dashboard-layout"
 import DashboardPage from "./pages/dashboard"
@@ -15,7 +14,8 @@ import MessageLogs from "./pages/dashboard/logs"
 function App() {
   return (
     <Routes>
-      <Route path="/" element={<HomePage />} />
+      {/* Redirect from home to login */}
+      <Route path="/" element={<Navigate to="/auth/login" replace />} />
       <Route path="/auth/login" element={<LoginPage />} />
 
       <Route path="/dashboard" element={<DashboardLayout />}>
@@ -30,7 +30,7 @@ function App() {
         <Route path="users" element={<UsersPage />} />
       </Route>
 
-      <Route path="*" element={<Navigate to="/" replace />} />
+      <Route path="*" element={<Navigate to="/auth/login" replace />} />
     </Routes>
   )
 }
