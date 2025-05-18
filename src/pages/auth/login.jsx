@@ -23,7 +23,7 @@ export default function LoginPage() {
     try {
       // In a real app, this would be an actual authentication call
       // For demo purposes, we'll just simulate a successful login
-      if (email === "admin@example.com" && password === "password") {
+      if (email === "admin@gmail.com" && password === "password") {
         navigate("/dashboard")
       } else {
         setError("Invalid credentials. Try admin@example.com / password")

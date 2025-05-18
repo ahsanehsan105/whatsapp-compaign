@@ -45,7 +45,7 @@ export function SidebarContent({ children, className = "", ...props }) {
 
 export function SidebarFooter({ children, className = "", ...props }) {
   return (
-    <div className={`border-t border-slate-200 p-4 ${className}`} {...props}>
+    <div className={`mt-auto border-t border-slate-200 p-4 ${className}`} {...props}>
       {children}
     </div>
   )
