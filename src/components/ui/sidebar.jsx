@@ -1,13 +1,13 @@
-"use client"
-
-import { createContext, useContext } from "react"
+import { createContext, useContext, useState, useCallback } from "react"
 
 const SidebarContext = createContext(null)
 
 export function SidebarProvider({ children }) {
-  // Always open, no toggle functionality
-  const value = { open: true, mobileOpen: false }
-
+  const [open, setOpen] = useState(true)
+  const toggleSidebar = useCallback(() => {
+    setOpen(prev => !prev)
+  }, [])
+  const value = { open, toggleSidebar }
   return <SidebarContext.Provider value={value}>{children}</SidebarContext.Provider>
 }
 
@@ -19,9 +19,14 @@ export function useSidebar() {
   return context
 }
 
-export function Sidebar({ children, className = "", ...props }) {
+export function Sidebar({ children, open = true, className = "", ...props }) {
   return (
-    <aside className={`fixed inset-y-0 left-0 z-30 w-64 bg-white shadow-lg ${className}`} {...props}>
+    <aside
+      className={`fixed inset-y-0 left-0 z-30 transition-all duration-200 bg-white shadow-lg
+        ${open ? "w-64" : "w-[64px]"} ${className}
+      `}
+      {...props}
+    >
       <div className="flex h-full flex-col overflow-hidden">{children}</div>
     </aside>
   )
@@ -49,11 +54,6 @@ export function SidebarFooter({ children, className = "", ...props }) {
       {children}
     </div>
   )
-}
-
-// Keep this for compatibility but it won't be used
-export function SidebarTrigger({ className = "", ...props }) {
-  return null
 }
 
 export function SidebarMenu({ children, className = "", ...props }) {
