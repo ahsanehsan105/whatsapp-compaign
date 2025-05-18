@@ -4,12 +4,12 @@ const SidebarContext = createContext(null)
 
 export function SidebarProvider({ children }) {
   const [open, setOpen] = useState(() => {
-    // Try to get previous state from localStorage
+    // By default, sidebar is closed
     if (typeof window !== "undefined") {
       const stored = localStorage.getItem("sidebar-open")
       if (stored !== null) return stored === "true"
     }
-    return true
+    return false // default to closed
   })
 
   useEffect(() => {
@@ -94,6 +94,7 @@ export function SidebarMenuButton({ children, isActive = false, className = "", 
         isActive ? "bg-emerald-100 text-emerald-900" : "text-slate-700 hover:bg-slate-100"
       } ${className}`}
       {...props}
+      tabIndex={-1}
     >
       {children}
     </button>

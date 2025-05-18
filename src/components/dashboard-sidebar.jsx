@@ -58,7 +58,7 @@ export function DashboardSidebar() {
           {open && <span className="text-xl font-bold ml-2">WhatsApp</span>}
           <button
             onClick={toggleSidebar}
-            className={`ml-auto rounded p-1 text-2xl hover:bg-slate-100 focus:outline-none`}
+            className="ml-auto rounded p-1 text-2xl hover:bg-slate-100 focus:outline-none"
             aria-label={open ? "Close sidebar" : "Open sidebar"}
           >
             {open ? <span>←</span> : <span>☰</span>}
@@ -69,7 +69,7 @@ export function DashboardSidebar() {
         <SidebarMenu>
           {navItems.map((item) => (
             <SidebarMenuItem key={item.href}>
-              <SidebarMenuButton asChild isActive={isActive(item.href, item.exact)}>
+              <SidebarMenuButton asChild={true} isActive={isActive(item.href, item.exact)}>
                 <Link to={item.href} className="flex items-center gap-3 justify-start">
                   <span className="text-xl">{item.icon}</span>
                   {open && <span>{item.title}</span>}
@@ -82,10 +82,10 @@ export function DashboardSidebar() {
       <SidebarFooter>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton asChild>
+            <SidebarMenuButton asChild={true}>
               <Link
                 to="/auth/login"
-                className={`flex items-center gap-3 text-red-600 hover:bg-red-50 hover:text-red-700 justify-start`}
+                className="flex items-center gap-3 text-red-600 hover:bg-red-50 hover:text-red-700 justify-start"
               >
                 <span className="text-xl">🚪</span>
                 {open && <span>Logout</span>}
