@@ -15,22 +15,22 @@ function App() {
   return (
     <Routes>
       {/* Redirect from home to login */}
-      <Route path="/" element={<Navigate to="/auth/login" replace />} />
-      <Route path="/auth/login" element={<LoginPage />} />
+      <Route path="/" element={<Navigate to="/login" replace />} />
+      <Route path="/login" element={<LoginPage />} />
 
       <Route path="/dashboard" element={<DashboardLayout />}>
         <Route index element={<DashboardPage />} />
         <Route path="campaigns" element={<CampaignsPage />} />
         <Route path="campaigns/new" element={<NewCampaignPage />} />
         <Route path="messages" element={<MessagesPage />} />
-        <Route path="logs" element={<MessageLogs />} />
+        {/* <Route path="logs" element={<MessageLogs />} /> */}
         <Route path="accounts" element={<AccountsPage />} />
         <Route path="analytics" element={<AnalyticsPage />} />
         <Route path="settings" element={<SettingsPage />} />
         <Route path="users" element={<UsersPage />} />
       </Route>
 
-      <Route path="*" element={<Navigate to="/auth/login" replace />} />
+      <Route path="*" element={<Navigate to="/login" replace />} />
     </Routes>
   )
 }

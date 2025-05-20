@@ -1,44 +1,65 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { useNavigate, Link } from "react-router-dom"
-import { Button } from "../../components/ui/button"
-import { Input } from "../../components/ui/input"
-import { Label } from "../../components/ui/label"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../../components/ui/card"
-import { Alert, AlertDescription } from "../../components/ui/alert"
-import { MessageCircle, Lock, Mail, ArrowRight } from "lucide-react"
+import { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { Button } from "../../components/ui/button";
+import { Input } from "../../components/ui/input";
+import { Label } from "../../components/ui/label";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "../../components/ui/card";
+import { Alert, AlertDescription } from "../../components/ui/alert";
+import { MessageCircle, Lock, Mail, ArrowRight } from "lucide-react";
+import constant from "../constant";
+import axios from "axios";
+
+// ✅ Toastify imports
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function LoginPage() {
-  const navigate = useNavigate()
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [error, setError] = useState("")
-  const [isLoading, setIsLoading] = useState(false)
+  const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    setIsLoading(true)
-    setError("")
-
+    e.preventDefault();
+    setIsLoading(true);
     try {
-      // In a real app, this would be an actual authentication call
-      // For demo purposes, we'll just simulate a successful login
-      if (email === "admin@gmail.com" && password === "password") {
-        navigate("/dashboard")
+      const response = await axios.post(`${constant.apiUrl}/auth/login`, {
+        email,
+        password,
+      });
+
+      if (response.status === 200 || response.status === 201) {
+        const userRole = response.data.userRole;
+
+        localStorage.setItem("userId", response.data.userId);
+
+        toast.success("Login successful");
+
+        setTimeout(() => {
+          window.location.href = "/dashboard";
+        }, 1000);
       } else {
-        setError("Invalid credentials. Try admin@gmail.com / password")
+        toast.error("Invalid credentials. Please try again");
       }
-    } catch (err) {
-      setError("An error occurred during login. Please try again.")
+    } catch (error) {
+      toast.error("Invalid credentials");
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-[#DCF8C6] to-white">
-      {/* Left side - Illustration/Brand */}
+      {/* Left side */}
       <div className="hidden lg:flex lg:w-1/2 bg-[#128C7E] flex-col items-center justify-center p-12 text-white">
         <div className="max-w-md mx-auto text-center">
           <div className="flex justify-center mb-8">
@@ -75,16 +96,15 @@ export default function LoginPage() {
               </div>
               <h2 className="text-xl font-bold text-[#128C7E]">MessageHub</h2>
             </div>
-            <CardTitle className="text-2xl font-bold text-center text-[#128C7E]">Login to Dashboard</CardTitle>
-            <CardDescription className="text-center">Enter your credentials to access your account</CardDescription>
+            <CardTitle className="text-2xl font-bold text-center text-[#128C7E]">
+              Login to Dashboard
+            </CardTitle>
+            <CardDescription className="text-center">
+              Enter your credentials to access your account
+            </CardDescription>
           </CardHeader>
           <form onSubmit={handleSubmit}>
             <CardContent className="space-y-4 sm:space-y-6 px-4 sm:px-6">
-              {error && (
-                <Alert variant="destructive" className="border-red-300 bg-red-50 text-red-800">
-                  <AlertDescription>{error}</AlertDescription>
-                </Alert>
-              )}
               <div className="space-y-2">
                 <Label htmlFor="email" className="text-[#128C7E] font-medium">
                   Email
@@ -104,15 +124,12 @@ export default function LoginPage() {
               </div>
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <Label htmlFor="password" className="text-[#128C7E] font-medium">
+                  <Label
+                    htmlFor="password"
+                    className="text-[#128C7E] font-medium"
+                  >
                     Password
                   </Label>
-                  <Link
-                    to="/auth/forgot-password"
-                    className="text-sm text-[#25D366] hover:text-[#128C7E] transition-colors"
-                  >
-                    Forgot password?
-                  </Link>
                 </div>
                 <div className="relative">
                   <Lock className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
@@ -135,19 +152,17 @@ export default function LoginPage() {
                 disabled={isLoading}
               >
                 {isLoading ? "Logging in..." : "Login"}
-                {!isLoading && <ArrowRight size={18} className="hidden sm:inline" />}
+                {!isLoading && (
+                  <ArrowRight size={18} className="hidden sm:inline" />
+                )}
               </Button>
-
-              <p className="text-sm text-center text-gray-500 mt-2">
-                Don't have an account?{" "}
-                <Link to="/auth/register" className="text-[#25D366] hover:text-[#128C7E] font-medium">
-                  Contact admin
-                </Link>
-              </p>
             </CardFooter>
           </form>
         </Card>
       </div>
+
+      {/* ✅ Toast Container */}
+      <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} />
     </div>
-  )
+  );
 }

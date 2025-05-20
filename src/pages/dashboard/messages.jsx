@@ -8,7 +8,8 @@ import { Badge } from "../../components/ui/badge"
 import { CheckCircle2, AlertCircle, Search, MoreVertical, Clock, Eye, Edit, XCircle } from "lucide-react"
 import { Input } from "../../components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../components/ui/select"
-
+import axios from "axios";
+import constant from "../constant";
 // Custom Dropdown
 function Dropdown({ items }) {
   const [isOpen, setIsOpen] = useState(false)
@@ -132,14 +133,61 @@ const sentMessages = [
 ]
 
 export default function MessagesPage() {
-  const [activeTab, setActiveTab] = useState("upcoming")
-  const [searchQuery, setSearchQuery] = useState("")
-  const [filteredUpcoming, setFilteredUpcoming] = useState(upcomingMessages)
-  const [filteredSent, setFilteredSent] = useState(sentMessages)
-  const [campaignFilter, setCampaignFilter] = useState("all")
-  const [statusFilter, setStatusFilter] = useState("all")
+   const [activeTab, setActiveTab] = useState("upcoming");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [campaignFilter, setCampaignFilter] = useState("all");
+  const [statusFilter, setStatusFilter] = useState("all");
 
-  // Dropdown items
+  const [upcomingCampaigns, setUpcomingCampaigns] = useState([]);
+  const [sentMessages, setSentMessages] = useState([]); // Optional: Add if using "sent" tab
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchUpcomingCampaign = async () => {
+      try {
+        const response = await axios.get(
+          `${constant.apiUrl}/upcoming-messages`
+        );
+        console.log("API Response:", response.data); // 🔍 Debug log
+        setUpcomingCampaigns(response.data.upcomingCampaigns); // update this after seeing the response
+      } catch (error) {
+        setError("Error fetching upcoming messages");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchUpcomingCampaign();
+  }, []);
+function getRelativeMinutes(scheduledTime) {
+  const now = new Date();
+    const scheduledDate = new Date(scheduledTime);
+    const diffMs = scheduledDate - now;
+    const diffMins = Math.round(diffMs / 60000);
+    if (diffMins <= 0) return "now";
+    return `in ${diffMins} minute${diffMins > 1 ? "s" : ""}`;
+}
+
+  const filteredUpcoming = upcomingCampaigns.filter((message) => {
+    const matchSearch = message.content
+      .toLowerCase()
+      .includes(searchQuery.toLowerCase());
+    const matchCampaign =
+      campaignFilter === "all" || message.campaign === campaignFilter;
+    return matchSearch && matchCampaign;
+  });
+
+  const filteredSent = sentMessages.filter((message) => {
+    const matchSearch = message.content
+      .toLowerCase()
+      .includes(searchQuery.toLowerCase());
+    const matchCampaign =
+      campaignFilter === "all" || message.campaign === campaignFilter;
+    const matchStatus =
+      statusFilter === "all" || message.status === statusFilter;
+    return matchSearch && matchCampaign && matchStatus;
+  });
+
   const upcomingDropdownItems = [
     {
       icon: <Eye className="mr-2 h-4 w-4" />,
@@ -157,48 +205,15 @@ export default function MessagesPage() {
       className: "text-red-600",
       onClick: () => console.log("Cancel Message clicked"),
     },
-  ]
+  ];
+
   const sentDropdownItems = [
     {
       icon: <Eye className="mr-2 h-4 w-4" />,
       label: "View Detail",
       onClick: () => console.log("View Detail clicked"),
     },
-  ]
-
-  useEffect(() => {
-    // Filter upcoming messages
-    const upcomingResults = upcomingMessages.filter((message) => {
-      const matchesSearch =
-        searchQuery === "" ||
-        message.campaign.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        message.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        message.recipient.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        message.group.toLowerCase().includes(searchQuery.toLowerCase())
-      const matchesCampaign =
-        campaignFilter === "all" ||
-        (campaignFilter === "summer" && message.campaign.includes("Summer")) ||
-        (campaignFilter === "product" && message.campaign.includes("Product"))
-      return matchesSearch && matchesCampaign
-    })
-    // Filter sent messages
-    const sentResults = sentMessages.filter((message) => {
-      const matchesSearch =
-        searchQuery === "" ||
-        message.campaign.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        message.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        message.recipient.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        message.group.toLowerCase().includes(searchQuery.toLowerCase())
-      const matchesCampaign =
-        campaignFilter === "all" ||
-        (campaignFilter === "summer" && message.campaign.includes("Summer")) ||
-        (campaignFilter === "product" && message.campaign.includes("Product"))
-      const matchesStatus = statusFilter === "all" || message.status === statusFilter
-      return matchesSearch && matchesCampaign && matchesStatus
-    })
-    setFilteredUpcoming(upcomingResults)
-    setFilteredSent(sentResults)
-  }, [searchQuery, campaignFilter, statusFilter])
+  ];
 
   return (
     <div className="flex flex-col gap-6">
@@ -288,16 +303,16 @@ export default function MessagesPage() {
                   <TableHead>Campaign</TableHead>
                   <TableHead>Message</TableHead>
                   {activeTab === "upcoming" ? <TableHead>Scheduled</TableHead> : <TableHead>Status</TableHead>}
-                  <TableHead>WhatsApp Number</TableHead>
+                  {/* <TableHead>WhatsApp Number</TableHead> */}
                   <TableHead>Group</TableHead>
-                  <TableHead className="text-right">Actions</TableHead>
+                  {/* <TableHead className="text-right">Actions</TableHead> */}
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {activeTab === "upcoming"
                   ? filteredUpcoming.map((message) => (
                       <TableRow key={message.id}>
-                        <TableCell className="font-medium">{message.campaign}</TableCell>
+                        <TableCell className="font-medium">{message.campaignInfo.name}</TableCell>
                         <TableCell className="max-w-[300px] truncate">
                           {message.content}
                           {message.hasMedia && (
@@ -309,10 +324,12 @@ export default function MessagesPage() {
                         <TableCell>
                           <div className="flex items-center">
                             <Clock className="mr-1 h-4 w-4 text-amber-500" />
-                            <span className="text-amber-500 font-medium">{message.scheduledTime}</span>
+                            <span className="text-amber-500 font-medium">{getRelativeMinutes(message.campaignInfo.scheduledTime)}</span>
+
+                            {/* <span className="text-amber-500 font-medium">{message.scheduledTime}</span> */}
                           </div>
                         </TableCell>
-                        <TableCell>{message.recipient}</TableCell>
+                        {/* <TableCell>{message.recipient}</TableCell> */}
                         <TableCell>{message.group}</TableCell>
                         <TableCell className="text-right">
                           <Dropdown items={upcomingDropdownItems} />

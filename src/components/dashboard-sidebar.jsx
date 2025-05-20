@@ -84,7 +84,7 @@ export function DashboardSidebar() {
           <SidebarMenuItem>
             <SidebarMenuButton asChild={true}>
               <Link
-                to="/auth/login"
+                to="/login"
                 className="flex items-center gap-3 text-red-600 hover:bg-red-50 hover:text-red-700 justify-start"
               >
                 <span className="text-xl">🚪</span>
