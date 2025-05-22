@@ -9,7 +9,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
+import constant from '../../constant';
 export default function NewCampaignPage() {
   const [activeTab, setActiveTab] = useState("manual");
   const [campaignName, setCampaignName] = useState("");
@@ -42,7 +42,7 @@ export default function NewCampaignPage() {
       try {
         // const sessionId = whatsappNumber.replace(/\+/g, "");
         const res = await fetch(
-          `http://localhost:5000/api/groups?sessionId=${encodeURIComponent(
+         `${constant.apiUrl}/groups?sessionId=${encodeURIComponent(
             sessionId
           )}`
         );
@@ -99,7 +99,7 @@ export default function NewCampaignPage() {
           console.log(pair[0], pair[1]);
         }
 
-        const response = await fetch("http://localhost:5000/api/send", {
+       const response = await fetch(`${constant.apiUrl}/send`, {
           method: "POST",
           body: formData,
           // Do NOT set Content-Type header manually for multipart/form-data
