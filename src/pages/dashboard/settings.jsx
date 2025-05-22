@@ -7,7 +7,7 @@ import { Card } from "../../components/ui/card"
 import { RefreshCcw, QrCode } from "lucide-react"
 
 export default function SettingsPage() {
-  const [activeTab, setActiveTab] = useState("general")
+  const [activeTab, setActiveTab] = useState("whatsapp")
 
   return (
     <div className="space-y-6">
@@ -19,14 +19,14 @@ export default function SettingsPage() {
       {/* Responsive tab layout: column on mobile, row on desktop */}
       <div className="bg-gray-100 rounded-md p-1">
         <div className="flex flex-col sm:flex-row gap-2 sm:gap-0 sm:min-w-0">
-          <button
+          {/* <button
             className={`flex-1 py-3 px-4 rounded-md text-center min-w-[140px] transition-all ${
               activeTab === "general" ? "bg-white text-gray-800 shadow" : "bg-transparent text-gray-600"
             }`}
             onClick={() => setActiveTab("general")}
           >
             General
-          </button>
+          </button> */}
           <button
             className={`flex-1 py-3 px-4 rounded-md text-center min-w-[140px] transition-all ${
               activeTab === "whatsapp" ? "bg-white text-gray-800 shadow" : "bg-transparent text-gray-600"
@@ -46,7 +46,7 @@ export default function SettingsPage() {
         </div>
       </div>
 
-      {activeTab === "general" && (
+      {/* {activeTab === "general" && (
         <Card className="p-3 sm:p-6">
           <div className="space-y-6">
             <div>
@@ -80,7 +80,7 @@ export default function SettingsPage() {
             </div>
           </div>
         </Card>
-      )}
+      )} */}
 
       {activeTab === "whatsapp" && (
         <div className="space-y-6">
@@ -130,7 +130,7 @@ export default function SettingsPage() {
               </div>
             </div>
           </Card>
-          <Card className="p-3 sm:p-6">
+          {/* <Card className="p-3 sm:p-6">
             <div className="space-y-6">
               <div>
                 <h2 className="text-lg sm:text-xl font-bold">WhatsApp Settings</h2>
@@ -156,7 +156,7 @@ export default function SettingsPage() {
                 </div>
               </div>
             </div>
-          </Card>
+          </Card> */}
         </div>
       )}
 

@@ -1,4 +1,4 @@
-import { Link, useLocation } from "react-router-dom"
+import { Link, useLocation } from "react-router-dom";
 import {
   Sidebar,
   SidebarContent,
@@ -8,11 +8,11 @@ import {
   SidebarMenuItem,
   SidebarMenuButton,
   useSidebar,
-} from "./ui/sidebar"
+} from "./ui/sidebar";
 
 export function DashboardSidebar() {
-  const location = useLocation()
-  const { open, toggleSidebar } = useSidebar()
+  const location = useLocation();
+  const { open, toggleSidebar } = useSidebar();
 
   const navItems = [
     {
@@ -31,24 +31,26 @@ export function DashboardSidebar() {
       href: "/dashboard/messages",
       icon: "💬",
     },
-    {
-      title: "Message Logs",
-      href: "/dashboard/logs",
-      icon: "📝",
-    },
+    // {
+    //   title: "Message Logs",
+    //   href: "/dashboard/logs",
+    //   icon: "📝",
+    // },
     {
       title: "Settings",
       href: "/dashboard/settings",
       icon: "⚙️",
     },
-  ]
+  ];
 
   const isActive = (path, exact = false) => {
     if (exact) {
-      return location.pathname === path
+      return location.pathname === path;
     }
-    return location.pathname === path || location.pathname.startsWith(`${path}/`)
-  }
+    return (
+      location.pathname === path || location.pathname.startsWith(`${path}/`)
+    );
+  };
 
   return (
     <Sidebar open={open}>
@@ -69,8 +71,14 @@ export function DashboardSidebar() {
         <SidebarMenu>
           {navItems.map((item) => (
             <SidebarMenuItem key={item.href}>
-              <SidebarMenuButton asChild={true} isActive={isActive(item.href, item.exact)}>
-                <Link to={item.href} className="flex items-center gap-3 justify-start">
+              <SidebarMenuButton
+                asChild={true}
+                isActive={isActive(item.href, item.exact)}
+              >
+                <Link
+                  to={item.href}
+                  className="flex items-center gap-3 justify-start"
+                >
                   <span className="text-xl">{item.icon}</span>
                   {open && <span>{item.title}</span>}
                 </Link>
@@ -85,6 +93,9 @@ export function DashboardSidebar() {
             <SidebarMenuButton asChild={true}>
               <Link
                 to="/login"
+                onClick={() => {
+                  localStorage.clear(); // or remove specific items with localStorage.removeItem("key")
+                }}
                 className="flex items-center gap-3 text-red-600 hover:bg-red-50 hover:text-red-700 justify-start"
               >
                 <span className="text-xl">🚪</span>
@@ -95,5 +106,5 @@ export function DashboardSidebar() {
         </SidebarMenu>
       </SidebarFooter>
     </Sidebar>
-  )
+  );
 }

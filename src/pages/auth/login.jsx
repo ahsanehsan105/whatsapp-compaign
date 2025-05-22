@@ -45,7 +45,7 @@ export default function LoginPage() {
         toast.success("Login successful");
 
         setTimeout(() => {
-          window.location.href = "/dashboard";
+          window.location.href = "/connect";
         }, 1000);
       } else {
         toast.error("Invalid credentials. Please try again");
@@ -67,20 +67,27 @@ export default function LoginPage() {
           </div>
           <h1 className="text-4xl font-bold mb-6">Welcome to MessageHub</h1>
           <p className="text-lg opacity-90 mb-8">
-            Connect with your audience through powerful messaging campaigns and analytics.
+            Connect with your audience through powerful messaging campaigns and
+            analytics.
           </p>
           <div className="grid grid-cols-3 gap-4 mt-12">
             <div className="bg-white/10 p-4 rounded-lg">
               <h3 className="font-medium mb-1">Campaigns</h3>
-              <p className="text-sm opacity-80">Create and manage messaging campaigns</p>
+              <p className="text-sm opacity-80">
+                Create and manage messaging campaigns
+              </p>
             </div>
             <div className="bg-white/10 p-4 rounded-lg">
               <h3 className="font-medium mb-1">Analytics</h3>
-              <p className="text-sm opacity-80">Track performance and engagement</p>
+              <p className="text-sm opacity-80">
+                Track performance and engagement
+              </p>
             </div>
             <div className="bg-white/10 p-4 rounded-lg">
               <h3 className="font-medium mb-1">Accounts</h3>
-              <p className="text-sm opacity-80">Manage your team and permissions</p>
+              <p className="text-sm opacity-80">
+                Manage your team and permissions
+              </p>
             </div>
           </div>
         </div>
@@ -162,7 +169,11 @@ export default function LoginPage() {
       </div>
 
       {/* ✅ Toast Container */}
-      <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} />
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+      />
     </div>
   );
 }

@@ -21,7 +21,7 @@ export default function NewCampaignPage() {
   const [startDate, setStartDate] = useState(null);
   const [messageInterval, setMessageInterval] = useState("5");
   const [csvFile, setCsvFile] = useState(null);
-
+  const sessionId = localStorage.getItem("userPhone");
   const handleCsvUpload = (e) => {
     if (e.target.files && e.target.files[0]) {
       setCsvFile(e.target.files[0]);
@@ -40,12 +40,13 @@ export default function NewCampaignPage() {
       }
 
       try {
-        const sessionId = whatsappNumber.replace(/\+/g, "");
+        // const sessionId = whatsappNumber.replace(/\+/g, "");
         const res = await fetch(
           `http://localhost:5000/api/groups?sessionId=${encodeURIComponent(
             sessionId
           )}`
         );
+        console.log(res);
         if (!res.ok) throw new Error("Failed to fetch groups");
         const data = await res.json();
         setGroupOptions(data);
@@ -67,7 +68,7 @@ export default function NewCampaignPage() {
       return;
     }
 
-    const sessionId = whatsappNumber.replace(/\+/g, "");
+    // const sessionId = whatsappNumber.replace(/\+/g, "");
     const localISOTime = new Date(
       startDate.getTime() - startDate.getTimezoneOffset() * 60000
     )
@@ -304,7 +305,7 @@ export default function NewCampaignPage() {
                   required
                 >
                   <option value="">Select WhatsApp number</option>
-                  <option value="923488685901">+923488685901</option>
+                  <option value="923488685901">+{sessionId}</option>
                 </select>
               </div>
 

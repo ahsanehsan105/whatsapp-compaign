@@ -1,15 +1,17 @@
-import { Routes, Route, Navigate } from "react-router-dom"
-import LoginPage from "./pages/auth/login"
-import DashboardLayout from "./layouts/dashboard-layout"
-import DashboardPage from "./pages/dashboard"
-import CampaignsPage from "./pages/dashboard/campaigns"
-import NewCampaignPage from "./pages/dashboard/campaigns/new"
-import MessagesPage from "./pages/dashboard/messages"
-import AccountsPage from "./pages/dashboard/accounts"
-import AnalyticsPage from "./pages/dashboard/analytics"
-import SettingsPage from "./pages/dashboard/settings"
-import UsersPage from "./pages/dashboard/users"
-import MessageLogs from "./pages/dashboard/logs"
+import { Routes, Route, Navigate } from "react-router-dom";
+import LoginPage from "./pages/auth/login";
+import DashboardLayout from "./layouts/dashboard-layout";
+import DashboardPage from "./pages/dashboard";
+import CampaignsPage from "./pages/dashboard/campaigns";
+import NewCampaignPage from "./pages/dashboard/campaigns/new";
+import MessagesPage from "./pages/dashboard/messages";
+import AccountsPage from "./pages/dashboard/accounts";
+import AnalyticsPage from "./pages/dashboard/analytics";
+import SettingsPage from "./pages/dashboard/settings";
+import UsersPage from "./pages/dashboard/users";
+import PhoneNumberEntryPage from "./pages/PhoneNumberEntryPage";
+import QRScannerPage from "./pages/QRScannerPage";
+// import MessageLogs from "./pages/dashboard/logs"
 
 function App() {
   return (
@@ -17,7 +19,8 @@ function App() {
       {/* Redirect from home to login */}
       <Route path="/" element={<Navigate to="/login" replace />} />
       <Route path="/login" element={<LoginPage />} />
-
+      <Route path="/connect" element={<PhoneNumberEntryPage />} />
+      <Route path="/qr" element={<QRScannerPage />} />
       <Route path="/dashboard" element={<DashboardLayout />}>
         <Route index element={<DashboardPage />} />
         <Route path="campaigns" element={<CampaignsPage />} />
@@ -32,7 +35,7 @@ function App() {
 
       <Route path="*" element={<Navigate to="/login" replace />} />
     </Routes>
-  )
+  );
 }
 
-export default App
+export default App;

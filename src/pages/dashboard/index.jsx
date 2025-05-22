@@ -99,16 +99,19 @@ export default function DashboardPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{totalCampaigns}</div>
+            <p className="text-xs text-slate-500">Campaigns created overall</p>
           </CardContent>
         </Card>
 
         <Card className="bg-white">
           <CardHeader className="flex flex-row items-center justify-between pb-1">
             <CardTitle className="text-sm font-medium">Messages Sent</CardTitle>
+
             <span className="text-xl">💬</span>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{totalMessages}</div>
+            <p className="text-xs text-slate-500">Messages successfully sent</p>
           </CardContent>
         </Card>
 
@@ -121,7 +124,7 @@ export default function DashboardPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{totalFailedMessages}</div>
-            <p className="text-xs text-slate-500">+0.5% from last month</p>
+            <p className="text-xs text-slate-500">Delivery failures detected</p>
           </CardContent>
         </Card>
 
@@ -134,7 +137,7 @@ export default function DashboardPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{totalQueuedMessages}</div>
-            <p className="text-xs text-slate-500">Both accounts connected</p>
+            <p className="text-xs text-slate-500">Pending messages in queue</p>
           </CardContent>
         </Card>
       </div>
@@ -148,29 +151,32 @@ export default function DashboardPage() {
             Your most recent WhatsApp campaigns
           </p>
           <div className="space-y-6">
-          
-            {recentCampaigns.map((campaign, index) => (
-              <RecentCampaign
-                key={index}
-                title={campaign.title}
-                status={{
-                  text:
-                    campaign.status.charAt(0).toUpperCase() +
-                    campaign.status.slice(1),
-                  color:
-                    campaign.status === "active"
-                      ? "green"
-                      : campaign.status === "completed"
-                      ? "blue"
-                      : campaign.status === "paused"
-                      ? "yellow"
-                      : "gray",
-                }}
-                progress={campaign.progress}
-                messages={campaign.messages}
-                started={new Date(campaign.started).toLocaleDateString()}
-              />
-            ))}
+            {recentCampaigns.length === 0 ? (
+              <p className="text-slate-500">No recent campaigns found.</p>
+            ) : (
+              recentCampaigns.map((campaign, index) => (
+                <RecentCampaign
+                  key={index}
+                  title={campaign.title}
+                  status={{
+                    text:
+                      campaign.status.charAt(0).toUpperCase() +
+                      campaign.status.slice(1),
+                    color:
+                      campaign.status === "active"
+                        ? "green"
+                        : campaign.status === "completed"
+                        ? "blue"
+                        : campaign.status === "paused"
+                        ? "yellow"
+                        : "gray",
+                  }}
+                  progress={campaign.progress}
+                  messages={campaign.messages}
+                  started={new Date(campaign.started).toLocaleDateString()}
+                />
+              ))
+            )}
           </div>
         </div>
         {/* Upcoming Messages */}
