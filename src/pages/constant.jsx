@@ -1,6 +1,6 @@
 const constant = {
-  apiUrl: "http://localhost:5000/api",
-  socketUrl: "http://localhost:5000",
+  apiUrl: "https://whatsapp-auto-bot-backend.vercel.app/api",
+  socketUrl: "https://whatsapp-auto-bot-backend.vercel.app/",
 };
 
 export default constant;
