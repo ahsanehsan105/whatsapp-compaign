@@ -4,51 +4,54 @@ import constant from "./constant";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import { QRCodeCanvas } from "qrcode.react"; // <-- new import
+import { QRCodeCanvas } from "qrcode.react";
 
 export default function QRScannerPage() {
   const [qrCode, setQrCode] = useState(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-  const userPhone = localStorage.getItem("userPhone");
-const [socket] = useState(() =>
-  io(constant.socketUrl, {
-    transports: ["websocket"],
-  })
-);
 
+  const rawPhone = localStorage.getItem("userPhone");
+  const sessionId = `session-${rawPhone}`; // ✅ match backend event
+
+  const [socket] = useState(() =>
+    io(constant.socketUrl, {
+      transports: ["websocket"],
+    })
+  );
 
   useEffect(() => {
-    if (!userPhone) {
+    if (!rawPhone) {
       navigate("/connect");
       return;
     }
 
-    socket.emit("join-session", userPhone);
+    console.log("🔗 Joining session:", sessionId);
+    socket.emit("join-session", sessionId);
 
-    axios.post(`${constant.apiUrl}/start-session`, { sessionId: userPhone })
+    axios
+      .post(`${constant.apiUrl}/start-session`, { sessionId })
       .catch(() => {
         toast.error("Failed to start WhatsApp session");
         setLoading(false);
       });
 
-socket.on(`qr-${userPhone}`, (qr) => {
-  console.log("📦 QR received:", qr);
-  setQrCode(qr);
-  setLoading(false);
-});
+    socket.on(`qr-${sessionId}`, (qr) => {
+      console.log("📦 QR received:", qr);
+      setQrCode(qr);
+      setLoading(false);
+    });
 
-
-    socket.on(`authenticated-${userPhone}`, () => {
+    socket.on(`authenticated-${sessionId}`, () => {
       toast.success("WhatsApp authenticated");
       navigate("/dashboard");
     });
 
     return () => {
-      socket.off(`qr-${userPhone}`);
-      socket.off(`authenticated-${userPhone}`);
+      socket.off(`qr-${sessionId}`);
+      socket.off(`authenticated-${sessionId}`);
     };
-  }, [userPhone, socket, navigate]);
+  }, [sessionId, socket, navigate]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
@@ -59,7 +62,10 @@ socket.on(`qr-${userPhone}`, (qr) => {
         {loading ? (
           <p>Waiting for QR code...</p>
         ) : qrCode ? (
-          <QRCodeCanvas value={qrCode} size={256} /> // <--- render as QR image!
+          <>
+            {console.log("🎯 Rendering QR with:", qrCode)}
+            <QRCodeCanvas value={qrCode} size={256} />
+          </>
         ) : (
           <p>No QR code available.</p>
         )}
