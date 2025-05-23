@@ -11,8 +11,12 @@ export default function QRScannerPage() {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const userPhone = localStorage.getItem("userPhone");
+const [socket] = useState(() =>
+  io(constant.socketUrl, {
+    transports: ["websocket"],
+  })
+);
 
-  const [socket] = useState(() => io(constant.socketUrl));
 
   useEffect(() => {
     if (!userPhone) {
