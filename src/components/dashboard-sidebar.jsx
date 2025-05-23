@@ -1,4 +1,4 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   Sidebar,
   SidebarContent,
@@ -9,9 +9,11 @@ import {
   SidebarMenuButton,
   useSidebar,
 } from "./ui/sidebar";
-
+import { useCallback } from "react";
+import constant from '../pages/constant';
 export function DashboardSidebar() {
   const location = useLocation();
+  const navigate = useNavigate();
   const { open, toggleSidebar } = useSidebar();
 
   const navItems = [
@@ -52,6 +54,28 @@ export function DashboardSidebar() {
     );
   };
 
+  // Handles logout process
+  const handleLogout = useCallback(async (e) => {
+    e.preventDefault();
+    try {
+      // Replace with how you store sessionId
+      const sessionId = localStorage.getItem("userPhone"); // or however you store it
+      if (sessionId) {
+        await fetch(`${constant.apiUrl}/logout`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ sessionId }),
+        });
+      }
+    } catch (error) {
+      // Optionally show error to user
+      console.error("Logout failed:", error);
+    } finally {
+      localStorage.clear();
+      navigate("/login", { replace: true });
+    }
+  }, [navigate]);
+
   return (
     <Sidebar open={open}>
       <SidebarHeader>
@@ -91,16 +115,15 @@ export function DashboardSidebar() {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton asChild={true}>
-              <Link
-                to="/login"
-                onClick={() => {
-                  localStorage.clear(); // or remove specific items with localStorage.removeItem("key")
-                }}
-                className="flex items-center gap-3 text-red-600 hover:bg-red-50 hover:text-red-700 justify-start"
+              {/* Use button for logout, not Link */}
+              <button
+                onClick={handleLogout}
+                className="w-full flex items-center gap-3 text-red-600 hover:bg-red-50 hover:text-red-700 justify-start py-2 px-3"
+                style={{ background: "none", border: "none" }}
               >
                 <span className="text-xl">🚪</span>
                 {open && <span>Logout</span>}
-              </Link>
+              </button>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
