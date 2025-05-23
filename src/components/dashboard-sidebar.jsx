@@ -61,7 +61,7 @@ export function DashboardSidebar() {
       // Replace with how you store sessionId
       const sessionId = localStorage.getItem("userPhone"); // or however you store it
       if (sessionId) {
-        await fetch(`${constant.apiUrl}/logout`, {
+        await fetch(`${constant.apiUrl}/auth/logout`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ sessionId }),
