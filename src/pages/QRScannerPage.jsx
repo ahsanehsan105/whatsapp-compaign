@@ -32,10 +32,12 @@ const [socket] = useState(() =>
         setLoading(false);
       });
 
-    socket.on(`qr-${userPhone}`, (qr) => {
-      setQrCode(qr);
-      setLoading(false);
-    });
+socket.on(`qr-${userPhone}`, (qr) => {
+  console.log("📦 QR received:", qr);
+  setQrCode(qr);
+  setLoading(false);
+});
+
 
     socket.on(`authenticated-${userPhone}`, () => {
       toast.success("WhatsApp authenticated");
