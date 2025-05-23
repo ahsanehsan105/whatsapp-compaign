@@ -131,7 +131,7 @@ export default function NewCampaignPage() {
         formData.append("file", csvFile);
 
         const response = await fetch(
-          "http://localhost:5000/api/send-csv-messages",
+         `${constant.apiUrl}/send-csv-messages`,
           {
             method: "POST",
             body: formData,
